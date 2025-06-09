@@ -3,8 +3,8 @@
 {
   home.packages = [
     pkgs.jetbrains.idea-ultimate
-    #pkgs.jetbrains.pycharm-professional
-    #pkgs.jetbrains.clion
+    pkgs.jetbrains.pycharm-professional
+    pkgs.jetbrains.clion
 
     pkgs.openjdk
     pkgs.python3
