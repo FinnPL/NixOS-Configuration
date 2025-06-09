@@ -1,11 +1,11 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ pkgs.kitty ];
+  home.packages = with pkgs; [ kitty pkgs.nerd-fonts.jetbrains-mono ];
   
   programs.kitty = {
     enable = true;
-    font.name = "FantasqueSansMono";
+    font.name = "JetBrainsMono Nerd Font";
     font.size = 12;
     theme = "Dracula";
   };
