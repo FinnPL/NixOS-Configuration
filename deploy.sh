@@ -3,7 +3,7 @@
 set -e
 
 # Deploy the NixOS configuration
-nixos-rebuild switch --flake .#centaur
+sudo nixos-rebuild switch --flake .#centaur
 
 # home-manager
-home-manager switch --flake .#centaur
+home-manager switch
