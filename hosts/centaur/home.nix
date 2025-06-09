@@ -13,6 +13,7 @@
     ../../modules/home-manager/vscode.nix
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/jetbrains.nix
+    ../../modules/home-manager/thunderbird.nix
    ];
 
    # git configuration
