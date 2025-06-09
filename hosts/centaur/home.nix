@@ -11,7 +11,8 @@
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/firefox.nix
     ../../modules/home-manager/vscode.nix
-    ../../modules/home-manager/zsh/zsh.nix
+    ../../modules/home-manager/zsh.nix
+    ../../modules/home-manager/jetbrains.nix
    ];
 
    # git configuration
@@ -36,6 +37,7 @@
     pkgs.texlive.combined.scheme-full
     pkgs.git
     pkgs.gh
+    pkgs.neofetch
 
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
