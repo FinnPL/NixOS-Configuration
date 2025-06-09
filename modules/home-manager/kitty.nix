@@ -7,6 +7,6 @@
     enable = true;
     font.name = "JetBrainsMono Nerd Font";
     font.size = 12;
-    theme = "Dracula";
+    themeFile = "Dracula";
   };
 }

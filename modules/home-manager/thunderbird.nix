@@ -8,6 +8,11 @@
   programs.thunderbird = {
     enable = true;
     package = pkgs.thunderbird;
+    profiles = {
+      fpl = {
+        isDefault = true;
+      };
+    };
     settings = {
       "mail.server.default.check_new_mail" = true;
       "mail.server.default.auto_download" = false;

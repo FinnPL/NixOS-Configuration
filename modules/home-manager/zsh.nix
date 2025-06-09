@@ -14,7 +14,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    initExtra = ''
+    initContent = ''
       # Set up pure prompt
       fpath+="${pkgs.pure-prompt}/share/zsh/site-functions"
       autoload -U promptinit; promptinit

@@ -5,7 +5,7 @@
   
   programs.vscode = {
     enable = true;
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       ms-python.python
       #docker.docker
       ms-azuretools.vscode-docker
