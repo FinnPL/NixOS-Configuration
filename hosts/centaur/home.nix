@@ -19,16 +19,11 @@ in
     ../../modules/home-manager/jetbrains.nix
     ../../modules/home-manager/thunderbird.nix
     ../../modules/home-manager/python-packages.nix
+    ../../modules/home-manager/cli-tools.nix
    ];
 
   colorScheme = shared.colorScheme;
 
-   # git configuration
-   programs.git = {
-     enable = true;
-     userName = "FinnPL";
-     userEmail = "contact@lippok.eu";
-   };
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -43,10 +38,6 @@ in
   # environment.
   home.packages = [
     pkgs.texlive.combined.scheme-full
-    pkgs.git
-    pkgs.gh
-    pkgs.neofetch
-
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
