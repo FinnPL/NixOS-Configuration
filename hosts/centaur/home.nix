@@ -14,6 +14,7 @@
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/jetbrains.nix
     ../../modules/home-manager/thunderbird.nix
+    ../../modules/home-manager/python-packages.nix
    ];
 
    # git configuration
