@@ -1,5 +1,8 @@
 { config, pkgs, inputs, ... }:
 
+let
+  shared = import ../../modules/nixos/shared.nix { nix-colors = inputs.nix-colors; };
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -8,6 +11,7 @@
   nixpkgs.config.allowUnfree = true;
 
    imports = [
+    inputs.nix-colors.homeManagerModules.default
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/firefox.nix
     ../../modules/home-manager/vscode.nix
@@ -16,6 +20,8 @@
     ../../modules/home-manager/thunderbird.nix
     ../../modules/home-manager/python-packages.nix
    ];
+
+  colorScheme = shared.colorScheme;
 
    # git configuration
    programs.git = {
