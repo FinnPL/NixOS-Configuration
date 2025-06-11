@@ -10,11 +10,10 @@ in
       inputs.home-manager.nixosModules.default
       inputs.nix-colors.homeManagerModules.default
       ../../modules/nixos/auto.nix
+      ../../modules/nixos/stylix-config.nix
     ];
 
   colorScheme = shared.colorScheme;
-  stylix.enable = true;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/espresso.yaml";
   
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
