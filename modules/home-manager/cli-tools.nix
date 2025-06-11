@@ -7,6 +7,7 @@
     htop
     traceroute
     wget
+    docker
   ];
 
   programs.git = {
