@@ -13,7 +13,9 @@ in
     ];
 
   colorScheme = shared.colorScheme;
-
+  stylix.enable = true;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/espresso.yaml";
+  
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
