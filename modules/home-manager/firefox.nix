@@ -3,6 +3,8 @@
 {
   home.packages = with pkgs; [ firefox ];
 
+  stylix.targets.firefox.profileNames = [ "fpl" ];
+
   programs.firefox = {
     enable = true;
     profiles.fpl = {

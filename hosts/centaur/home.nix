@@ -1,8 +1,5 @@
 { config, pkgs, inputs, ... }:
 
-let
-  shared = import ../../modules/nixos/shared.nix { nix-colors = inputs.nix-colors; };
-in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -11,7 +8,6 @@ in
   nixpkgs.config.allowUnfree = true;
 
    imports = [
-    inputs.nix-colors.homeManagerModules.default
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/firefox.nix
     ../../modules/home-manager/vscode.nix
@@ -21,9 +17,6 @@ in
     ../../modules/home-manager/python-packages.nix
     ../../modules/home-manager/cli-tools.nix
    ];
-
-  colorScheme = shared.colorScheme;
-
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release

@@ -1,19 +1,13 @@
 { config, pkgs, inputs, lib, ... }:
 
-let
-  shared = import ../../modules/nixos/shared.nix { nix-colors = inputs.nix-colors; };
-in
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       inputs.home-manager.nixosModules.default
-      inputs.nix-colors.homeManagerModules.default
       ../../modules/nixos/auto.nix
       ../../modules/nixos/stylix-config.nix
     ];
-
-  colorScheme = shared.colorScheme;
   
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -77,7 +71,7 @@ in
           "--remember-session"
           "--sessions ${waylandSessions}:${xSessions}"
           "--time"
-          "--theme 'border=#${config.colorScheme.palette.base0D};text=#${config.colorScheme.palette.base05};prompt=#${config.colorScheme.palette.base0E};time=#${config.colorScheme.palette.base0A};action=#${config.colorScheme.palette.base0B};button=#${config.colorScheme.palette.base05};container=#${config.colorScheme.palette.base00};input=#${config.colorScheme.palette.base08}'"
+#          "--theme 'border=#${config.colorScheme.palette.base0D};text=#${config.colorScheme.palette.base05};prompt=#${config.colorScheme.palette.base0E};time=#${config.colorScheme.palette.base0A};action=#${config.colorScheme.palette.base0B};button=#${config.colorScheme.palette.base05};container=#${config.colorScheme.palette.base00};input=#${config.colorScheme.palette.base08}'"
           "--cmd Hyprland"
           "--asterisks"
         ];
