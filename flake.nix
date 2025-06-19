@@ -17,6 +17,10 @@
     stylix.url = "github:danth/stylix";
 
     hyprland.url = "github:hyprwm/Hyprland";
+    hyprland-plugins = {
+      url = "github:hyprwm/Hyprland-Plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
