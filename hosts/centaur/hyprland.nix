@@ -1,6 +1,12 @@
 { config, pkgs, lib, ... }:
 
 {
+  home.packages = with pkgs; [ 
+    rofi 
+    libnotify 
+    playerctl    
+    pavucontrol
+  ];
   # 1) Enable Hyprland itself
   wayland.windowManager.hyprland = {
     enable = true;
@@ -53,45 +59,16 @@
       bind = $mod, up, movewindow, u
       bind = $mod, down, movewindow, d
 
+      # Move active window to previous/next workspace with CTRL+SUPER+Left/Right
+      bind = CTRL+$mod, left, movetoworkspace, -1
+      bind = CTRL+$mod, right, movetoworkspace, +1
     '';
   };
   
   programs.waybar = {
     enable = true;
-
-    settings = {
-      mainBar = {
-        layer = "top";
-        position = "top";
-        modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "clock" ];
-        modules-right = [ "pulseaudio" "battery" "network" ];
-        clock = {
-          format = "{:%H:%M}";
-        };
-        pulseaudio = {
-          format = "{volume}%";
-        };
-        battery = {
-          format = "{capacity}% {icon}";
-        };
-        network = {
-          format = "{ifname}: {ipaddr}";
-        };
-      };
-    };
-
-    style = ''
-      * {
-        font-family: "JetBrainsMono Nerd Font";
-        font-size: 13px;
-      }
-
-      window#waybar {
-        background: rgba(30, 30, 46, 0.9);
-        color: #cdd6f4;
-      }
-    '';
+    style = ../../none-nix/waybar/style.css;
+    settings = lib.importJSON ../../none-nix/waybar/config;
   };
 
   # 2) Enable and install Rofi
@@ -99,6 +76,4 @@
     enable = true;
   };
 
-  # 3) Ensure Rofi and notifications are on your $PATH
-  home.packages = with pkgs; [ rofi libnotify ];
 }
