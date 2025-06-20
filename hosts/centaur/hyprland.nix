@@ -8,6 +8,7 @@
     # 4) Add Rofi and test keybindings via extraConfig
     extraConfig = ''
       exec-once = kitty
+      exec-once = waybar
       monitor = eDP-1,1920x1080@60,0x0,1
 
       # Set Swiss German keyboard layout
@@ -52,6 +53,44 @@
       bind = $mod, up, movewindow, u
       bind = $mod, down, movewindow, d
 
+    '';
+  };
+  
+  programs.waybar = {
+    enable = true;
+
+    settings = {
+      mainBar = {
+        layer = "top";
+        position = "top";
+        modules-left = [ "hyprland/workspaces" ];
+        modules-center = [ "clock" ];
+        modules-right = [ "pulseaudio" "battery" "network" ];
+        clock = {
+          format = "{:%H:%M}";
+        };
+        pulseaudio = {
+          format = "{volume}%";
+        };
+        battery = {
+          format = "{capacity}% {icon}";
+        };
+        network = {
+          format = "{ifname}: {ipaddr}";
+        };
+      };
+    };
+
+    style = ''
+      * {
+        font-family: "JetBrainsMono Nerd Font";
+        font-size: 13px;
+      }
+
+      window#waybar {
+        background: rgba(30, 30, 46, 0.9);
+        color: #cdd6f4;
+      }
     '';
   };
 
