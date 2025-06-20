@@ -62,12 +62,16 @@
       # Move active window to previous/next workspace with CTRL+SUPER+Left/Right
       bind = CTRL+$mod, left, movetoworkspace, -1
       bind = CTRL+$mod, right, movetoworkspace, +1
+
+      # Logout with SUPER+SHIFT+L
+      bind = $mod+SHIFT, L, exec, hyprctl dispatch exit
+
     '';
   };
   
   programs.waybar = {
     enable = true;
-    style = ../../none-nix/waybar/style.css;
+    style = lib.mkForce ../../none-nix/waybar/style.css;
     settings = lib.importJSON ../../none-nix/waybar/config;
   };
 
