@@ -8,6 +8,8 @@
   nixpkgs.config.allowUnfree = true;
 
    imports = [
+    ../../modules/nixos/stylix-config.nix
+
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/firefox.nix
     ../../modules/home-manager/vscode.nix
