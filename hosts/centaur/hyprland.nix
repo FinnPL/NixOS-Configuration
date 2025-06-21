@@ -17,10 +17,10 @@
 
     # 4) Add Rofi and test keybindings via extraConfig
     extraConfig = ''
-      exec-once = kitty
+      exec-once = hyprpaper
       exec-once = waybar
       exec-once = mako
-      exec-once = hyprpaper
+
       monitor = eDP-1,1920x1080@60,0x0,1
 
       # Set Swiss German keyboard layout
