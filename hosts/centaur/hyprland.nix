@@ -9,7 +9,8 @@
     hyprpaper
     wl-clipboard
     cliphist
-    papirus-icon-theme 
+    papirus-icon-theme
+    jq
   ];
   # 1) Enable Hyprland itself
   wayland.windowManager.hyprland = {
@@ -49,10 +50,10 @@
       bind = CTRL, down, movefocus, d
 
       # Resize window
-      bind = ALT, left, resizeactive, -20 0
-      bind = ALT, right, resizeactive, 20 0
-      bind = ALT, up, resizeactive, 0 -20
-      bind = ALT, down, resizeactive, 0 20
+      bind = $mod+CTRL, left, resizeactive, -30 0
+      bind = $mod+CTRL, right, resizeactive, 30 0
+      bind = $mod+CTRL, up, resizeactive, 0 -30
+      bind = $mod+CTRL, down, resizeactive, 0 30
 
       # Move between workspaces
       bind = $mod+ALT, left, workspace, -1
@@ -61,20 +62,23 @@
       # Close window with ALT+Q
       bind = ALT, Q, killactive, 
 
-      # Move active window
-      bind = $mod, left, movewindow, l
-      bind = $mod, right, movewindow, r
-      bind = $mod, up, movewindow, u
-      bind = $mod, down, movewindow, d
-
-      # Move active window to previous/next workspace with CTRL+SUPER+Left/Right
-      bind = CTRL+$mod, left, movetoworkspace, -1
-      bind = CTRL+$mod, right, movetoworkspace, +1
+      # Move active window (with edge detection)
+      bind = $mod, left, exec, ~/.config/hypr/move_or_switch.sh left
+      bind = $mod, right, exec, ~/.config/hypr/move_or_switch.sh right
+      bind = $mod, up, exec, ~/.config/hypr/move_or_switch.sh up
+      bind = $mod, down, exec, ~/.config/hypr/move_or_switch.sh down
 
       # Logout with SUPER+SHIFT+L
       bind = $mod+SHIFT, L, exec, hyprctl dispatch exit
 
     '';
+  };
+
+home.file = {
+    ".config/hypr/move_or_switch.sh" = {
+      text       = builtins.readFile ../../none-nix/hypr/move_or_switch.sh;
+      executable = true;
+    };
   };
   
   programs.waybar = {
