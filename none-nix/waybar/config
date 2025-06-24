@@ -69,10 +69,10 @@
       "waves": false
     },
     "clock": {
-      "format": " {:%a, %d %b, %I:%M %p}",
+      "format": " {:%a, %d %m, %H:%M}",
       "format-alt": " {:%d/%m}",
       "tooltip": "true",
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+      "tooltip-format": "<big>{:%Y %m}</big>\n<tt><small>{calendar}</small></tt>"
     },
     "cpu": {
       "format": "󰻠 {usage}%",
@@ -81,19 +81,21 @@
     },
     "custom/launcher": {
       "format": "",
-      "tooltip": "false"
+      "tooltip": false
     },
     "custom/playerctl#backward": {
       "format": "󰙣 ",
       "on-click": "playerctl previous",
       "on-scroll-down": "playerctl volume .05-",
-      "on-scroll-up": "playerctl volume .05+"
+      "on-scroll-up": "playerctl volume .05+",
+      "tooltip": false
     },
     "custom/playerctl#foward": {
       "format": "󰙡 ",
       "on-click": "playerctl next",
       "on-scroll-down": "playerctl volume .05-",
-      "on-scroll-up": "playerctl volume .05+"
+      "on-scroll-up": "playerctl volume .05+",
+      "tooltip": false
     },
     "custom/playerctl#play": {
       "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
@@ -139,7 +141,9 @@
       "custom/playerctl#backward",
       "custom/playerctl#play",
       "custom/playerctl#foward",
-      "custom/playerlabel"
+      "custom/playerlabel",
+      "cpu",
+      "memory"
     ],
     "modules-right": [
       "tray",

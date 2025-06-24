@@ -18,6 +18,9 @@
 
     # 4) Add Rofi and test keybindings via extraConfig
     extraConfig = ''
+      misc {
+        disable_hyprland_logo = true
+      }
       exec-once = hyprpaper
       exec-once = waybar
       exec-once = mako
@@ -44,10 +47,10 @@
       bind = $mod, F, exec, $browser
 
       # Move focus to different tile
-      bind = CTRL, left, movefocus, l
-      bind = CTRL, right, movefocus, r
-      bind = CTRL, up, movefocus, u
-      bind = CTRL, down, movefocus, d
+      bind = ALT, left, movefocus, l
+      bind = ALT, right, movefocus, r
+      bind = ALT, up, movefocus, u
+      bind = ALT, down, movefocus, d
 
       # Resize window
       bind = $mod+CTRL, left, resizeactive, -30 0
