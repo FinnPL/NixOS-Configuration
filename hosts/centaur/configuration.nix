@@ -54,7 +54,7 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   environment.systemPackages = [pkgs.greetd.tuigreet];
 

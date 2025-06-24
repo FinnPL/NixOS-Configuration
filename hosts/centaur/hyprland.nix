@@ -89,6 +89,7 @@ home.file = {
     style = lib.mkForce ../../none-nix/waybar/style.css;
     settings = lib.importJSON ../../none-nix/waybar/config;
   };
+  stylix.targets.waybar.enable = false;
 
   # 2) Enable and install Rofi
   programs.rofi = {
