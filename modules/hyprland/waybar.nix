@@ -5,6 +5,7 @@
     playerctl
     pavucontrol
     networkmanagerapplet
+    brightnessctl
   ];
 
   programs.waybar = {

@@ -10,7 +10,7 @@ window#waybar {
     background: rgba(17,17,27,1);
 }
 
-#cpu, #memory {
+#cpu, #memory, #custom-brightness {
     background: #25253a;
     color: #f5f5f5;
     border-radius: 24px 10px 24px 10px;
@@ -20,7 +20,7 @@ window#waybar {
     transition: background 0.3s, color 0.3s;
 }
 
-#cpu:hover, #memory:hover {
+#cpu:hover, #memory:hover, #custom-brightness:hover {
     background: #89b4fa;
     color: #11111B;
 }

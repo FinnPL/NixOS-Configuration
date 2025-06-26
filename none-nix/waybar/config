@@ -120,6 +120,13 @@
     "custom/randwall": {
       "format": "󰏘"
     },
+    "custom/brightness": {
+      "exec": "brightnessctl | awk '/Current brightness/ {print $4}' | tr -d '()%'", 
+      "format": "󰃠 {}%",
+      "tooltip": false,
+      "on-scroll-up": "brightnessctl set +1%",
+      "on-scroll-down": "brightnessctl set 1%-"
+    },
     "height": 35,
     "layer": "top",
     "margin-bottom": 0,
@@ -138,12 +145,13 @@
     ],
     "modules-left": [
       "custom/launcher",
+      "custom/brightness",
+      "cpu",
+      "memory",
       "custom/playerctl#backward",
       "custom/playerctl#play",
       "custom/playerctl#foward",
-      "custom/playerlabel",
-      "cpu",
-      "memory"
+      "custom/playerlabel"
     ],
     "modules-right": [
       "tray",
