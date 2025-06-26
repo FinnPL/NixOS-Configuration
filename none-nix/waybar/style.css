@@ -10,6 +10,26 @@ window#waybar {
     background: rgba(17,17,27,1);
 }
 
+#cpu, #memory {
+    background: #25253a;
+    color: #f5f5f5;
+    border-radius: 24px 10px 24px 10px;
+    padding: 0 20px;
+    margin: 5px 0;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+#cpu:hover, #memory:hover {
+    background: #89b4fa;
+    color: #11111B;
+}
+
+#battery:hover, #pulseaudio:hover, #network:hover, #clock:hover {
+    background: #89b4fa;
+    color: #11111B;
+}
+
 #cava.left, #cava.right {
     background: #25253a;
     margin: 5px; 
