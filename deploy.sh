@@ -9,9 +9,19 @@ HOST="centaur"
 # Check for required commands
 command -v nixos-rebuild >/dev/null 2>&1 || { echo "nixos-rebuild not found."; exit 1; }
 
-# Update flake inputs
-echo "Updating flake inputs..."
-nix flake update --flake "$FLAKE_PATH"
+# Parse arguments
+UPDATE=0
+for arg in "$@"; do
+    if [[ "$arg" == "-up" ]]; then
+        UPDATE=1
+    fi
+done
+
+# Update flake inputs if -up flag is passed
+if [[ $UPDATE -eq 1 ]]; then
+    echo "Updating flake inputs..."
+    nix flake update --flake "$FLAKE_PATH"
+fi
 
 # Deploy the NixOS configuration
 echo "Rebuilding and switching to new configuration..."
