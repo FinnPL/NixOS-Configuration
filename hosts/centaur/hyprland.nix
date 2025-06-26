@@ -24,6 +24,7 @@
       exec-once = hyprpaper
       exec-once = waybar
       exec-once = mako
+      exec-once = wl-paste --watch cliphist store
 
       monitor = eDP-1,1920x1080@60,0x0,1
 
@@ -131,12 +132,16 @@ home.file = {
   '';
 
   systemd.user.services.cliphist-store = {
-    Unit.Description = "Cliphist clipboard storage";
+    Unit = {
+      Description = "Cliphist clipboard storage";
+      After = [ "graphical-session.target" ];
+    };
     Service = {
       ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store";
+      Restart = "always";
+      RestartSec = 1;
     };
-    Install.WantedBy = [ "default.target" ];
+    Install.WantedBy = [ "graphical-session.target" ];
   };
-
 
 }
