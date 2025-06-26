@@ -1,23 +1,13 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ 
-    rofi
-    libnotify 
-    playerctl    
-    pavucontrol
-    hyprpaper
-    wl-clipboard
-    cliphist
-    papirus-icon-theme
+  home.packages = with pkgs; [
     jq
-    networkmanagerapplet
   ];
-  # 1) Enable Hyprland itself
+
   wayland.windowManager.hyprland = {
     enable = true;
 
-    # 4) Add Rofi and test keybindings via extraConfig
     extraConfig = ''
       misc {
         disable_hyprland_logo = true
@@ -42,7 +32,6 @@
       # Rofi toggle on Alt+Space
       bind = ALT, SPACE, exec, pkill rofi || rofi -show drun -no-config -theme-str '@theme "${config.home.homeDirectory}/.config/rofi/adv.rasi"'
       bind = $mod, V, exec, pkill rofi || (cliphist list | rofi -dmenu | cliphist decode | wl-copy)
-
 
       # Terminal & browser
       bind = $mod, SPACE, exec, $term
@@ -75,74 +64,13 @@
 
       # Logout with SUPER+SHIFT+L
       bind = $mod+SHIFT, L, exec, hyprctl dispatch exit
-
     '';
   };
 
-home.file = {
+  home.file = {
     ".config/hypr/move_or_switch.sh" = {
       text       = builtins.readFile ../../none-nix/hypr/move_or_switch.sh;
       executable = true;
     };
   };
-  
-  programs.waybar = {
-    enable = true;
-    style = lib.mkForce ../../none-nix/waybar/style.css;
-    settings = lib.importJSON ../../none-nix/waybar/config;
-  };
-  stylix.targets.waybar.enable = false;
-
-  # 2) Enable and install Rofi
-  programs.rofi = {
-    enable = true;
-  };
-  xdg.configFile."rofi/template/rounded-template.rasi".source = ../../none-nix/rofi/rounded-template.rasi;
-  xdg.configFile."rofi/adv.rasi".text =''
-  * {
-    bg0:    #${config.lib.stylix.colors.base00};
-    bg1:    #${config.lib.stylix.colors.base01};
-    bg2:    #${config.lib.stylix.colors.base02}CC;
-    bg3:    #${config.lib.stylix.colors.base0D}F2;
-    fg0:    #${config.lib.stylix.colors.base05};
-    fg1:    #${config.lib.stylix.colors.base06};
-    fg2:    #${config.lib.stylix.colors.base05};
-    fg3:    #${config.lib.stylix.colors.base03};
-  }
-
-  configuration {
-    icon-theme: "Papirus";
-    show-icons: true;
-  }
-
-
-    @import "template/rounded-template.rasi"
-
-    element selected {
-        text-color: @bg1;
-    }
-  '';
-
-  services.mako = {
-    enable = true;
-  };
-
-  xdg.configFile."hypr/hyprpaper.conf".text = ''
-    preload = ${config.home.homeDirectory}/Pictures/wallpaper.jpg
-    wallpaper = eDP-1,${config.home.homeDirectory}/Pictures/wallpaper.jpg
-  '';
-
-  systemd.user.services.cliphist-store = {
-    Unit = {
-      Description = "Cliphist clipboard storage";
-      After = [ "graphical-session.target" ];
-    };
-    Service = {
-      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store";
-      Restart = "always";
-      RestartSec = 1;
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
-
 }
