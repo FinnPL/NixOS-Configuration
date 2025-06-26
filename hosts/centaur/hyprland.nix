@@ -11,6 +11,7 @@
     cliphist
     papirus-icon-theme
     jq
+    networkmanagerapplet
   ];
   # 1) Enable Hyprland itself
   wayland.windowManager.hyprland = {
