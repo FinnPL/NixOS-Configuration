@@ -124,6 +124,7 @@
       "exec": "brightnessctl | awk '/Current brightness/ {print $4}' | tr -d '()%'", 
       "format": "󰃠 {}%",
       "tooltip": false,
+      "interval": 1,
       "on-scroll-up": "brightnessctl set +1%",
       "on-scroll-down": "brightnessctl set 1%-"
     },
