@@ -19,10 +19,14 @@
 
       monitor = eDP-1,1920x1080@60,0x0,1
 
-      # Set Swiss German keyboard layout
+      # Set Swiss German keyboard layout and enable natural scrolling
       input {
         kb_layout = ch
         kb_variant = de
+        
+        touchpad {
+          natural_scroll = yes
+        }
       }
 
       $mod = SUPER

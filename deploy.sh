@@ -28,3 +28,9 @@ echo "Rebuilding and switching to new configuration..."
 sudo nixos-rebuild switch --flake "$FLAKE_PATH#$HOST"
 
 echo "Deployment complete."
+
+# Reload Hyprland configuration
+if command -v hyprctl >/dev/null 2>&1; then
+    echo "Reloading Hyprland configuration..."
+    hyprctl reload
+fi
