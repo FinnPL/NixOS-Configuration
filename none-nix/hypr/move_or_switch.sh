@@ -31,6 +31,8 @@ read -r ws_x ws_y ws_w ws_h < <(
 
 # Margin in pixels
 MARGIN=30
+# Waybar height (accounts for top bar)
+WAYBAR_HEIGHT=40
 
 # Determine if window is at the edge
 at_edge=0
@@ -44,7 +46,8 @@ if [[ $axis == x ]]; then
   fi
 else
   if [[ $direction == up ]]; then
-    (( win_y - ws_y <= MARGIN )) && at_edge=1
+    # Account for waybar at the top
+    (( win_y - (ws_y + WAYBAR_HEIGHT) <= MARGIN )) && at_edge=1
   else  # down
     (( (win_y + win_h) - (ws_y + ws_h) >= -MARGIN )) && at_edge=1
   fi
@@ -52,7 +55,13 @@ fi
 
 # Dispatch the appropriate action
 if (( at_edge )); then
-  hyprctl dispatch movetoworkspace "${WS_MOVE[$direction]}"
+  if [[ $axis == x ]]; then
+    # For left/right movements, move to next/previous workspace
+    hyprctl dispatch movetoworkspace "${WS_MOVE[$direction]}"
+  else
+    # For up/down, toggle split
+    hyprctl dispatch layoutmsg "togglesplit"
+  fi
 else
   hyprctl dispatch movewindow "${SHORT[$direction]}"
 fi

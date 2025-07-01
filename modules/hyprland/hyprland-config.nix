@@ -29,6 +29,10 @@
         }
       }
 
+      dwindle {
+        preserve_split = true
+      }
+
       $mod = SUPER
       $term = kitty
       $browser = firefox
