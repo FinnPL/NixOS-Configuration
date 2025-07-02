@@ -27,6 +27,13 @@
     portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
 
+  environment.sessionVariables = {
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_SESSION_TYPE = "wayland";
+    GDK_BACKEND = "wayland";
+    MOZ_ENABLE_WAYLAND = "1"; # for Firefox
+  };
+
   networking.hostName = "centaur";
 
   # Enable networking
@@ -51,10 +58,10 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  #services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.desktopManager.gnome.enable = true;
+  #services.desktopManager.gnome.enable = true;
 
   environment.systemPackages = [pkgs.greetd.tuigreet];
 
