@@ -61,7 +61,7 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.desktopManager.gnome.enable = true;
+  # services.desktopManager.gnome.enable = true;
 
   environment.systemPackages = with pkgs; [
     greetd.tuigreet
@@ -117,13 +117,21 @@
     pulse.enable = true;
   };
 
+  # Enable bluetooth
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
+  # Enable GNOME Keyring PAM integration
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
 
   programs.zsh.enable = true;
 
   users.users.fpl = {
     isNormalUser = true;
     description = "fpl";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "bluetooth" ];
     shell = pkgs.zsh;
     packages = with pkgs; [
     ];
