@@ -63,7 +63,12 @@
   # Enable the GNOME Desktop Environment.
   #services.desktopManager.gnome.enable = true;
 
-  environment.systemPackages = [pkgs.greetd.tuigreet];
+  environment.systemPackages = with pkgs; [
+    greetd.tuigreet
+    xdg-desktop-portal
+    xdg-desktop-portal-hyprland
+    xdg-desktop-portal-gtk
+  ];
 
   services.greetd = {
     enable = true;
@@ -135,4 +140,11 @@
   nixpkgs.config.allowUnfree = true;
 
   system.stateVersion = "25.05";
+
+  services.dbus.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
 }
