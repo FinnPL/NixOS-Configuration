@@ -11,6 +11,7 @@
     xfce.thunar-archive-plugin
     xfce.thunar-volman
     xfce.thunar-media-tags-plugin
+    gvfs
     
     # Thumbnail generation for file managers
     xfce.tumbler  # Main thumbnail service

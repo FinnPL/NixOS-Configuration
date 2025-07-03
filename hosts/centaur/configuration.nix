@@ -126,6 +126,9 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd.enableGnomeKeyring = true;
 
+  # Enable GVfs for virtual file system support
+  services.gvfs.enable = true;
+
   programs.zsh.enable = true;
 
   users.users.fpl = {
