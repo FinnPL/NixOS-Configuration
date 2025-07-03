@@ -51,4 +51,29 @@
       package = pkgs.papirus-icon-theme;
     };
   };
+
+  # Transparency CSS using stylix
+  stylix.targets.gtk.extraCss = ''
+    /* Thunar transparency overrides */
+    .thunar-window {
+      background-color: alpha(@theme_bg_color, 0.70);
+    }
+    
+    .thunar-window .view {
+      background-color: alpha(@theme_base_color, 0.70);
+    }
+    
+    .thunar-window .sidebar {
+      background-color: alpha(@theme_bg_color, 0.70);
+    }
+    
+    /* General window transparency for GTK3 apps */
+    window {
+      background-color: alpha(@theme_bg_color, 0.85);
+    }
+    
+    .background {
+      background-color: alpha(@theme_bg_color, 0.85);
+    }
+  '';
 }

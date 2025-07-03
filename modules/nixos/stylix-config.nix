@@ -17,5 +17,7 @@
       name = "BreezeX-RosePineDawn-Linux";
       size = 32;
     };
+    # Allow home-manager to override GTK CSS
+    targets.gtk.enable = true;
   };
 }
