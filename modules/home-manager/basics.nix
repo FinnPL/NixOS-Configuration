@@ -6,10 +6,23 @@
     # Bluetooth management
     blueman
     
-    # File manager
+    # File manager with improved functionality
     xfce.thunar
     xfce.thunar-archive-plugin
     xfce.thunar-volman
+    xfce.thunar-media-tags-plugin
+    
+    # Thumbnail generation for file managers
+    xfce.tumbler  # Main thumbnail service
+    ffmpegthumbnailer  # Video thumbnails
+    
+    # Icon themes for better appearance
+    papirus-icon-theme
+    adwaita-icon-theme
+    
+    # Image format support
+    webp-pixbuf-loader
+    librsvg  # SVG support
     
     evince  # GNOME document viewer
     loupe # GNOME image viewer (formerly eog)
@@ -28,5 +41,14 @@
   services.gnome-keyring = {
     enable = true;
     components = [ "pkcs11" "secrets" "ssh" ];
+  };
+
+  # GTK configuration for better theming
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Papirus";
+      package = pkgs.papirus-icon-theme;
+    };
   };
 }
