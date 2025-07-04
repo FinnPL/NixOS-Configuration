@@ -24,7 +24,7 @@
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
-      nixosConfigurations.centaur = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.centaur = nixpkgs.lib.nixosSystem {
       specialArgs = {inherit inputs;};
       modules = [
         ./hosts/centaur/configuration.nix
@@ -32,5 +32,7 @@
         inputs.stylix.nixosModules.stylix
       ];
     };
+
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
   };
 }
