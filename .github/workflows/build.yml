@@ -72,6 +72,10 @@ jobs:
         echo "🧹 Clearing build cache..."
         nix-collect-garbage || echo "⚠️ Garbage collection failed, continuing"
         
+        # Check for kernel-related issues first
+        echo "🔍 Checking for kernel configuration issues..."
+        nix eval .#nixosConfigurations.${{ matrix.host }}.config.boot.kernelPackages.kernel.version || echo "⚠️ Could not determine kernel version"
+        
         # Try building with extra debugging and fallback options
         echo "🏗️ Building NixOS system..."
         nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
@@ -81,22 +85,44 @@ jobs:
           --refresh \
           --no-link \
           --option narinfo-cache-negative-ttl 0 \
+          --option build-fallback true \
+          --option keep-going true \
           || {
-            echo "❌ First build attempt failed, trying alternative approach..."
+            echo "❌ First build attempt failed, trying alternative approaches..."
             
-            # Try with different substituters
-            echo "🔄 Retrying with minimal substituters..."
+            # Try without kernel modules temporarily
+            echo "🔄 Attempting build without problematic kernel modules..."
+            nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.etc \
+              --verbose \
+              --show-trace \
+              --fallback \
+              --no-link \
+              || echo "⚠️ Even basic system build failed"
+            
+            # Try with different substituters and force rebuild
+            echo "🔄 Retrying with clean substituters and forced rebuild..."
             nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
               --verbose \
               --show-trace \
               --fallback \
               --no-link \
-              --option substituters "https://cache.nixos.org" \
-              --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" \
+              --rebuild \
+              --option substituters "https://cache.nixos.org https://hyprland.cachix.org" \
+              --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" \
               || {
-                echo "💥 Build failed completely. Checking system info..."
+                echo "💥 All build attempts failed. Detailed diagnosis:"
                 echo "Nix version: $(nix --version)"
-                echo "Available store paths: $(find /nix/store -name "*linux*" -type d | head -5 || echo 'No Linux paths found')"
+                echo "System: $(uname -a)"
+                echo "Checking kernel-related store paths..."
+                find /nix/store -name "*linux*" -type d 2>/dev/null | head -10 || echo 'No Linux paths found'
+                echo "Checking for missing modules..."
+                find /nix/store -name "*modules*" -type d 2>/dev/null | head -5 || echo 'No module paths found'
+                
+                # Try to get more specific error info
+                echo "🔍 Attempting to identify the exact failing component..."
+                nix show-derivation .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel 2>/dev/null | head -20 || echo "Could not show derivation"
+                
+                echo "❌ Build failed after all recovery attempts. This may require manual intervention."
                 exit 1
               }
           }
