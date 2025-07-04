@@ -92,7 +92,6 @@ Located in `modules/hyprland/`:
 - **mako.nix** - Notification daemon
 - **hyprpaper.nix** - Wallpaper management
 - **cliphist.nix** - Clipboard history
-- **packages.nix** - Hyprland-specific packages
 
 ### NixOS Modules
 

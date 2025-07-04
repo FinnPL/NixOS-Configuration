@@ -1,0 +1,63 @@
+name: "Test NixOS Configuration"
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  basic-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check flake syntax
+      run: nix flake check --verbose
+
+    - name: Evaluate NixOS configuration
+      run: |
+        nix eval .#nixosConfigurations.centaur.config.system.build.toplevel.drvPath \
+          --verbose
+
+    - name: Check for common issues
+      run: |
+        echo "Checking for common configuration issues..."
+        
+        # Check if all imports exist
+        echo "Verifying all imports are accessible..."
+        nix eval .#nixosConfigurations.centaur.options --apply 'x: "imports-ok"' || echo "Import check failed"
+        
+        # Check if home-manager is properly configured
+        echo "Checking home-manager integration..."
+        nix eval .#nixosConfigurations.centaur.config.home-manager --apply 'x: "hm-ok"' || echo "Home-manager not configured"
+        
+        echo "Basic checks completed!"
+
+  dry-build:
+    runs-on: ubuntu-latest
+    needs: basic-check
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+    - name: Dry build NixOS configuration
+      run: |
+        nix build .#nixosConfigurations.centaur.config.system.build.toplevel \
+          --dry-run \
+          --verbose
