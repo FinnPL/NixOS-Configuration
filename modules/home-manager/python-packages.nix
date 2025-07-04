@@ -1,16 +1,18 @@
-{ config, pkgs, ... }:
-
-let
-  myPythonEnv = pkgs.python3.withPackages (ps: with ps; [
-    numpy
-    scipy
-    pandas
-    plotly
-    sympy
-    notebook
-  ]);
+{
+  config,
+  pkgs,
+  ...
+}: let
+  myPythonEnv = pkgs.python3.withPackages (ps:
+    with ps; [
+      numpy
+      scipy
+      pandas
+      plotly
+      sympy
+      notebook
+    ]);
 in {
-
   home.packages = [
     myPythonEnv
   ];

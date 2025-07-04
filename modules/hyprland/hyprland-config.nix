@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     jq
   ];
@@ -20,7 +22,7 @@
     input {
       kb_layout = ch
       kb_variant = de
-      
+
       touchpad {
         natural_scroll = yes
       }
@@ -28,7 +30,7 @@
 
     decoration {
       rounding = 10
-      
+
       # Enable transparency/blur
       blur {
         enabled = true
@@ -36,7 +38,7 @@
         passes = 1
         new_optimizations = true
       }
-      
+
     }
 
     dwindle {
@@ -72,7 +74,7 @@
     bind = $mod+ALT, right, workspace, +1
 
     # Close window with ALT+Q
-    bind = ALT, Q, killactive, 
+    bind = ALT, Q, killactive,
 
     # Move active window (with edge detection)
     bind = $mod, left, exec, ~/.config/hypr/move_or_switch.sh left
@@ -86,7 +88,7 @@
 
   home.file = {
     ".config/hypr/move_or_switch.sh" = {
-      text       = builtins.readFile ../../none-nix/hypr/move_or_switch.sh;
+      text = builtins.readFile ../../none-nix/hypr/move_or_switch.sh;
       executable = true;
     };
   };

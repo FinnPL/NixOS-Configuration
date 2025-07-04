@@ -1,8 +1,10 @@
-{ config, pkgs, ... }:
-
 {
-  home.packages = with pkgs; [ pkgs.vscode ];
-  
+  config,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [pkgs.vscode];
+
   programs.vscode = {
     enable = true;
     profiles.default.extensions = with pkgs.vscode-extensions; [

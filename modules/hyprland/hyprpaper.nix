@@ -1,9 +1,11 @@
-{ config, pkgs, ... }:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   #wallpaperPath = ../../none-nix/wallpapers/203038.jpg;
   wallpaperPath = "${config.home.homeDirectory}/Pictures/wallpaper.png";
-in
-{
+in {
   home.packages = with pkgs; [
     hyprpaper
   ];

@@ -1,6 +1,8 @@
-{ pkgs, lib, ...}:
-
 {
+  pkgs,
+  lib,
+  ...
+}: {
   # Automatic Updates
   system.autoUpgrade.enable = true;
   system.autoUpgrade.dates = "weekly";

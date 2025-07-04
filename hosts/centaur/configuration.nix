@@ -1,19 +1,23 @@
-{ config, pkgs, inputs, lib, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
-      ../../modules/nixos/auto.nix
-      ../../modules/nixos/stylix-config.nix
-    ];
-  
+  config,
+  pkgs,
+  inputs,
+  lib,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+    ../../modules/nixos/auto.nix
+    ../../modules/nixos/stylix-config.nix
+  ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   nix.settings = {
     substituters = ["https://hyprland.cachix.org"];
@@ -83,7 +87,7 @@
           "--remember-session"
           "--sessions ${waylandSessions}:${xSessions}"
           "--time"
-#          "--theme 'border=#${config.colorScheme.palette.base0D};text=#${config.colorScheme.palette.base05};prompt=#${config.colorScheme.palette.base0E};time=#${config.colorScheme.palette.base0A};action=#${config.colorScheme.palette.base0B};button=#${config.colorScheme.palette.base05};container=#${config.colorScheme.palette.base00};input=#${config.colorScheme.palette.base08}'"
+          #          "--theme 'border=#${config.colorScheme.palette.base0D};text=#${config.colorScheme.palette.base05};prompt=#${config.colorScheme.palette.base0E};time=#${config.colorScheme.palette.base0A};action=#${config.colorScheme.palette.base0B};button=#${config.colorScheme.palette.base05};container=#${config.colorScheme.palette.base00};input=#${config.colorScheme.palette.base08}'"
           "--cmd Hyprland"
           "--asterisks"
         ];
@@ -94,7 +98,7 @@
       };
     };
   };
-  
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "ch";
@@ -134,14 +138,14 @@
   users.users.fpl = {
     isNormalUser = true;
     description = "fpl";
-    extraGroups = [ "networkmanager" "wheel" "bluetooth" ];
+    extraGroups = ["networkmanager" "wheel" "bluetooth"];
     shell = pkgs.zsh;
     packages = with pkgs; [
     ];
   };
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {inherit inputs;};
     users = {
       "fpl" = import ./home.nix;
     };
@@ -156,6 +160,6 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
 }

@@ -121,7 +121,7 @@ jobs:
         extra_nix_config: |
           experimental-features = nix-command flakes
 
-    - name: Check Nix formatting with nix fmt
+    - name: Check Nix formatting with alejandra
       run: |
         nix fmt -- --check .
 

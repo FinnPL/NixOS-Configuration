@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     playerctl
     pavucontrol
@@ -45,7 +48,7 @@
 
       #cava.left, #cava.right {
           background: #${config.lib.stylix.colors.base01};
-          margin: 5px; 
+          margin: 5px;
           padding: 8px 16px;
           color: #${config.lib.stylix.colors.base0E};
       }

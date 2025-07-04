@@ -1,9 +1,12 @@
-{ config, pkgs, inputs, ... }:
-
 {
-  home.packages = with pkgs; [ firefox ];
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
+  home.packages = with pkgs; [firefox];
 
-  stylix.targets.firefox.profileNames = [ "fpl" ];
+  stylix.targets.firefox.profileNames = ["fpl"];
 
   programs.firefox = {
     enable = true;

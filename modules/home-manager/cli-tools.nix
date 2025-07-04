@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
 {
+  config,
+  pkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     git
     gh
@@ -11,8 +14,8 @@
   ];
 
   programs.git = {
-     enable = true;
-     userName = "FinnPL";
-     userEmail = "contact@lippok.eu";
+    enable = true;
+    userName = "FinnPL";
+    userEmail = "contact@lippok.eu";
   };
 }

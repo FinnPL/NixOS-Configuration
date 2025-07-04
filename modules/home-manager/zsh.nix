@@ -1,14 +1,16 @@
-{ config, pkgs, ... }:
-
 {
-  home.packages = with pkgs; [ pure-prompt ];
+  config,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [pure-prompt];
 
   programs.zsh = {
     enable = true;
     oh-my-zsh = {
       enable = true;
       theme = "";
-      plugins = [ "git" "z" "sudo" "gh" ];
+      plugins = ["git" "z" "sudo" "gh"];
     };
     enableCompletion = true;
     autosuggestion.enable = true;
