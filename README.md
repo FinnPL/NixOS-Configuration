@@ -1,4 +1,6 @@
 # NixOS Configuration
+[![Test NixOS Configuration](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/test.yml/badge.svg)](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/test.yml)
+[![Build NixOS Configuration](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/build.yml/badge.svg)](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/build.yml)
 
 My NixOS configuration using flakes with Hyprland, Home Manager, and modular structure.
 
