@@ -17,9 +17,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Use a stable kernel to avoid module path issues in CI
-  boot.kernelPackages = pkgs.linuxPackages; # Latest stable kernel instead of latest
-
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   nix.settings = {

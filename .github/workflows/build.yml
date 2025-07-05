@@ -71,7 +71,7 @@ jobs:
         echo ""
         echo "📦 Checking system packages..."
         nix eval .#nixosConfigurations.${{ matrix.host }}.config.environment.systemPackages \
-          --apply "pkgs: builtins.length pkgs" \
+          --apply "pkgs: builtins.toString (builtins.length pkgs)" \
           --raw
         echo " packages configured"
 
