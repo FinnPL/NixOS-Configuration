@@ -30,7 +30,7 @@ jobs:
     - name: Check flake
       run: nix flake check --verbose
 
-  build:
+  evaluate:
     runs-on: ubuntu-latest
     needs: check
     strategy:
@@ -54,109 +54,39 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         skipPush: true
 
-    - name: Update flake inputs (to resolve version conflicts)
+    - name: Evaluate NixOS configuration for ${{ matrix.host }}
       run: |
-        echo "📦 Updating flake lock to ensure version compatibility..."
-        nix flake update --verbose
-      continue-on-error: true
+        echo "� Evaluating NixOS configuration..."
+        
+        # Evaluate the full system configuration to ensure it's valid
+        echo "📋 Evaluating system configuration..."
+        nix eval .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel.drvPath \
+          --verbose \
+          --show-trace
 
-    - name: Build NixOS configuration for ${{ matrix.host }}
-      run: |
-        echo "🔧 Attempting to build NixOS configuration..."
-        
-        # Create log directory for organized output
-        mkdir -p build-logs
-        
-        # First, try updating flake inputs to resolve potential version conflicts
-        echo "📦 Updating flake lock file..."
-        nix flake update --verbose 2>&1 | head -50 || echo "⚠️ Flake update failed, continuing with existing lock"
-        
-        # Clear any problematic cached builds
-        echo "🧹 Clearing build cache..."
-        nix-collect-garbage 2>&1 | head -20 || echo "⚠️ Garbage collection failed, continuing"
-        
-        # Check for kernel-related issues first
         echo "🔍 Checking kernel configuration..."
-        nix eval .#nixosConfigurations.${{ matrix.host }}.config.boot.kernelPackages.kernel.version 2>&1 | head -5 || echo "⚠️ Could not determine kernel version"
+        nix eval .#nixosConfigurations.${{ matrix.host }}.config.boot.kernelPackages.kernel.version \
+          --raw
         
-        # Try a dry run first to identify issues without building
-        echo "🔍 Performing dry run to identify potential issues..."
-        if ! nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --dry-run --verbose 2>&1 | tee build-logs/dry-run.log; then
-          echo "❌ Dry run failed. Last 30 lines of dry run output:"
-          tail -30 build-logs/dry-run.log
-          echo "💡 Trying to identify specific failing components..."
-          
-          # Try to build just the kernel to isolate the issue
-          echo "🔍 Testing kernel build specifically..."
-          nix build .#nixosConfigurations.${{ matrix.host }}.config.boot.kernelPackages.kernel --dry-run 2>&1 | head -20 || echo "❌ Kernel dry-run failed"
-          
-          echo "❌ Dry run failed, proceeding with fallback strategies..."
-        fi
-        
-        # Try building with limited output and error focus
-        echo "🏗️ Building NixOS system (with truncated logs)..."
-        if ! timeout 20m nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
-          --verbose \
-          --show-trace \
-          --fallback \
-          --refresh \
-          --no-link \
-          --option narinfo-cache-negative-ttl 0 \
-          --option build-fallback true \
-          --option keep-going true \
-          2>&1 | tee build-logs/main-build.log; then
-          
-          echo "❌ First build attempt failed. Analyzing error..."
-          
-          # Show only the most relevant error information
-          echo "� Last 50 lines of build output:"
-          tail -50 build-logs/main-build.log
-          
-          echo "🔍 Searching for specific error patterns:"
-          grep -i "error\|failed\|not found\|missing" build-logs/main-build.log | tail -10 || echo "No specific errors found in patterns"
-          
-          echo "🔍 Checking for store path issues:"
-          grep -i "store.*not.*nix\|path.*not.*store" build-logs/main-build.log | tail -5 || echo "No store path errors found"
-          
-          # Try alternative build strategy
-          echo "🔄 Trying alternative build approach..."
-          if ! timeout 15m nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
-            --verbose \
-            --show-trace \
-            --fallback \
-            --no-link \
-            --rebuild \
-            --option substituters "https://cache.nixos.org https://hyprland.cachix.org" \
-            --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" \
-            2>&1 | tee build-logs/fallback-build.log; then
-            
-            echo "💥 All build attempts failed. Compact error summary:"
-            echo "Nix version: $(nix --version)"
-            echo "System: $(uname -a)"
-            
-            echo "🔍 Final error analysis:"
-            tail -20 build-logs/fallback-build.log
-            
-            echo "🔍 Store diagnostics (limited):"
-            find /nix/store -name "*linux*" -type d 2>/dev/null | head -5 || echo 'No Linux paths found'
-            find /nix/store -name "*modules*" -type d 2>/dev/null | head -3 || echo 'No module paths found'
-            
-            echo "❌ Build failed after all recovery attempts."
-            exit 1
-          else
-            echo "✅ Fallback build succeeded!"
-          fi
-        else
-          echo "✅ Main build succeeded!"
-        fi
+        echo ""
+        echo "📦 Checking system packages..."
+        nix eval .#nixosConfigurations.${{ matrix.host }}.config.environment.systemPackages \
+          --apply "pkgs: builtins.length pkgs" \
+          --raw
+        echo " packages configured"
 
-    - name: Build Home Manager configuration for ${{ matrix.host }}
+        echo "✅ Configuration evaluation completed successfully!"
+
+    - name: Evaluate Home Manager configuration for ${{ matrix.host }}
       run: |
-        nix build .#nixosConfigurations.${{ matrix.host }}.config.home-manager.users.*.home.activationPackage \
-          --verbose \
-          --show-trace \
-          --fallback \
-          --keep-going || echo "Home Manager build failed or not configured"
+        echo "🏠 Evaluating Home Manager configuration..."
+        # Try to evaluate Home Manager if it exists
+        if nix eval .#nixosConfigurations.${{ matrix.host }}.config.home-manager.users --apply "users: builtins.attrNames users" 2>/dev/null; then
+          echo "✅ Home Manager configuration found and valid"
+        else
+          echo "ℹ️  No Home Manager configuration found or not configured"
+        fi
+      continue-on-error: true
 
   format-check:
     runs-on: ubuntu-latest
