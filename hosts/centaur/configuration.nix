@@ -5,26 +5,40 @@
   lib,
   ...
 }: {
+  # ============================================================================
+  # IMPORTS
+  # ============================================================================
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
     ../../modules/nixos/auto.nix
     ../../modules/nixos/stylix-config.nix
   ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # ============================================================================
+  # BOOT CONFIGURATION
+  # ============================================================================
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-
+  # ============================================================================
+  # NIX CONFIGURATION
+  # ============================================================================
   nix.settings = {
+    experimental-features = ["nix-command" "flakes"];
     substituters = ["https://hyprland.cachix.org"];
     trusted-substituters = ["https://hyprland.cachix.org"];
     trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # ============================================================================
+  # HYPRLAND CONFIGURATION
+  # ============================================================================
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -35,45 +49,52 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     GDK_BACKEND = "wayland";
-    MOZ_ENABLE_WAYLAND = "1"; # for Firefox
+    MOZ_ENABLE_WAYLAND = "1";
   };
 
-  networking.hostName = "centaur";
+  # ============================================================================
+  # NETWORK CONFIGURATION
+  # ============================================================================
+  networking = {
+    hostName = "centaur";
+    networkmanager.enable = true;
+  };
 
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
+  # ============================================================================
+  # LOCALIZATION
+  # ============================================================================
   time.timeZone = "Europe/Berlin";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
+  
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT = "de_DE.UTF-8";
+      LC_MONETARY = "de_DE.UTF-8";
+      LC_NAME = "de_DE.UTF-8";
+      LC_NUMERIC = "de_DE.UTF-8";
+      LC_PAPER = "de_DE.UTF-8";
+      LC_TELEPHONE = "de_DE.UTF-8";
+      LC_TIME = "de_DE.UTF-8";
+    };
   };
 
-  # Enable the X11 windowing system.
+  # Keyboard configuration
+  services.xserver.xkb = {
+    layout = "ch";
+    variant = "";
+  };
+  console.keyMap = "sg";
+
+  # ============================================================================
+  # SERVICES CONFIGURATION
+  # ============================================================================
+  
+  # X11 Services
   services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  # services.desktopManager.gnome.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    greetd.tuigreet
-    xdg-desktop-portal
-    xdg-desktop-portal-hyprland
-    xdg-desktop-portal-gtk
-  ];
-
+  
+  # Display Manager (Greetd)
   services.greetd = {
     enable = true;
     settings = {
@@ -87,7 +108,6 @@
           "--remember-session"
           "--sessions ${waylandSessions}:${xSessions}"
           "--time"
-          #          "--theme 'border=#${config.colorScheme.palette.base0D};text=#${config.colorScheme.palette.base05};prompt=#${config.colorScheme.palette.base0E};time=#${config.colorScheme.palette.base0A};action=#${config.colorScheme.palette.base0B};button=#${config.colorScheme.palette.base05};container=#${config.colorScheme.palette.base00};input=#${config.colorScheme.palette.base08}'"
           "--cmd Hyprland"
           "--asterisks"
         ];
@@ -99,19 +119,10 @@
     };
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "ch";
-    variant = "";
-  };
-
-  # Configure console keymap
-  console.keyMap = "sg";
-
-  # Enable CUPS to print documents.
+  # Printing
   services.printing.enable = true;
 
-  # Enable sound with pipewire.
+  # Audio (PipeWire)
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -121,29 +132,66 @@
     pulse.enable = true;
   };
 
-  # Enable bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
+  # D-Bus
+  services.dbus.enable = true;
 
-  # Enable GNOME Keyring PAM integration
+  # GNOME Services
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.greetd.enableGnomeKeyring = true;
-
-  # Enable GVfs for virtual file system support
   services.gvfs.enable = true;
 
+  # Bluetooth
+  services.blueman.enable = true;
+
+  # ============================================================================
+  # HARDWARE CONFIGURATION
+  # ============================================================================
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
+  # ============================================================================
+  # SECURITY & PAM
+  # ============================================================================
+  security.pam.services.greetd.enableGnomeKeyring = true;
+
+  # ============================================================================
+  # DESKTOP PORTALS
+  # ============================================================================
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+  };
+
+  # ============================================================================
+  # SYSTEM PACKAGES
+  # ============================================================================
+  environment.systemPackages = with pkgs; [
+    greetd.tuigreet
+    xdg-desktop-portal
+    xdg-desktop-portal-hyprland
+    xdg-desktop-portal-gtk
+  ];
+
+  # ============================================================================
+  # PROGRAMS
+  # ============================================================================
   programs.zsh.enable = true;
 
+  # ============================================================================
+  # USER CONFIGURATION
+  # ============================================================================
   users.users.fpl = {
     isNormalUser = true;
     description = "fpl";
     extraGroups = ["networkmanager" "wheel" "bluetooth"];
     shell = pkgs.zsh;
-    packages = with pkgs; [
-    ];
+    packages = with pkgs; [];
   };
 
+  # ============================================================================
+  # HOME MANAGER
+  # ============================================================================
   home-manager = {
     extraSpecialArgs = {inherit inputs;};
     users = {
@@ -151,15 +199,8 @@
     };
   };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
+  # ============================================================================
+  # SYSTEM STATE VERSION
+  # ============================================================================
   system.stateVersion = "25.05";
-
-  services.dbus.enable = true;
-
-  xdg.portal = {
-    enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gtk];
-  };
 }
