@@ -1,4 +1,4 @@
-name: "Build NixOS Configuration"
+name: "Evaluate NixOS Configuration"
 
 on:
   push:
