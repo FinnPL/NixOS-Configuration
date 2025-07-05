@@ -64,7 +64,7 @@
   # LOCALIZATION
   # ============================================================================
   time.timeZone = "Europe/Berlin";
-  
+
   i18n = {
     defaultLocale = "en_US.UTF-8";
     extraLocaleSettings = {
@@ -90,10 +90,10 @@
   # ============================================================================
   # SERVICES CONFIGURATION
   # ============================================================================
-  
+
   # X11 Services
   services.xserver.enable = true;
-  
+
   # Display Manager (Greetd)
   services.greetd = {
     enable = true;

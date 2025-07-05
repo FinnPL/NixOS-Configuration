@@ -17,6 +17,12 @@ for arg in "$@"; do
     fi
 done
 
+# Format Nix files
+if command -v nix >/dev/null 2>&1; then
+    echo "Formatting Nix files with nix fmt..."
+    nix fmt "$FLAKE_PATH"
+fi
+
 # Update flake inputs if -up flag is passed
 if [[ $UPDATE -eq 1 ]]; then
     echo "Updating flake inputs..."
