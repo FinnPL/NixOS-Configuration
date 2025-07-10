@@ -30,6 +30,8 @@
 
     decoration {
       rounding = 10
+      inactive_opacity = 0.75
+      active_opacity = 0.85
 
       # Enable transparency/blur
       blur {
@@ -39,6 +41,15 @@
         vibrancy = 0.1696
         new_optimizations = true
       }
+    }
+
+    general {
+      border_size = 2
+      col.active_border = rgba(${config.lib.stylix.colors.base0D}ff) rgba(${config.lib.stylix.colors.base0C}ff) 45deg
+      col.inactive_border = rgba(${config.lib.stylix.colors.base00}00)
+      resize_on_border = false
+      allow_tearing = false
+      layout = dwindle
     }
 
     animations {
@@ -61,7 +72,12 @@
     }
 
     # Window rules
-    windowrule=opacity 0.92 override 0.85 override, class:^(thunar)$
+    windowrule=opacity 0.75 override 0.70 override, class:^(thunar)$
+    windowrule=opacity 0.98 override 0.98 override, class:^(firefox)$
+    windowrule=opacity 0.98 override 0.98 override, class:^(gimp|gwenview|ristretto)$
+    windowrule=opacity 0.98 override 0.98 override, class:^(evince|okular|zathura)$
+    windowrule=opacity 0.98 override 0.98 override, class:^(vlc|mpv)$
+
 
     $mod = SUPER
     $term = kitty
