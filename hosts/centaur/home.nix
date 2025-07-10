@@ -38,6 +38,7 @@
   home.packages = [
     pkgs.texlive.combined.scheme-full
     pkgs.protonvpn-gui
+    pkgs.termius
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello

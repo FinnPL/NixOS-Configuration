@@ -8,6 +8,7 @@
     gh
     neofetch
     htop
+    btop
     traceroute
     wget
     docker
@@ -17,5 +18,12 @@
     enable = true;
     userName = "FinnPL";
     userEmail = "contact@lippok.eu";
+  };
+
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "stylix";
+    };
   };
 }
