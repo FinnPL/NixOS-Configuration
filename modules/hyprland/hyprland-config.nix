@@ -57,6 +57,9 @@
     bind = $mod, SPACE, exec, $term
     bind = $mod, F, exec, $browser
 
+    # Open Thunar with WIN+E
+    bind = $mod, E, exec, thunar
+
     # Move focus to different tile
     bind = ALT, left, movefocus, l
     bind = ALT, right, movefocus, r
