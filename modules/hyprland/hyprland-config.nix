@@ -34,16 +34,34 @@
       # Enable transparency/blur
       blur {
         enabled = true
-        size = 8
-        passes = 1
+        size = 1
+        passes = 5
+        vibrancy = 0.1696
         new_optimizations = true
       }
+    }
 
+    animations {
+    enabled = true, animations
+        bezier = winIn, 0.1, 1.0, 0.1, 1.0
+        bezier = winOut, 0.1, 1.0, 0.1, 1.0
+        bezier = smoothOut, 0.5, 0, 0.99, 0.99
+        bezier = layerOut,0.23,1,0.32,1
+        animation = windowsIn, 1, 7, winIn, slide
+        animation = windowsOut, 1, 3, smoothOut, slide
+        animation = windowsMove, 1, 7, winIn, slide
+        animation = workspacesIn, 1, 8, winIn, slide
+        animation = workspacesOut, 1, 8, winOut, slide
+        animation = layersIn, 1, 10, winIn, slide
+        animation = layersOut, 1, 3, layerOut, popin 50%
     }
 
     dwindle {
       preserve_split = true
     }
+
+    # Window rules
+    windowrule=opacity 0.92 override 0.85 override, class:^(thunar)$
 
     $mod = SUPER
     $term = kitty
