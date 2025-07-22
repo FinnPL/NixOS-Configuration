@@ -32,11 +32,13 @@ jobs:
         echo "Calculated lastModified: $NOW"
         echo "Before edit:"
         awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
-        if [ -z "$HASH" ]; then echo "ERROR: HASH is empty!"; fi
-        perl -0777 -i -pe "s|(\"wallpapers\": \{[\s\S]*?\"locked\": \{[\s\S]*?\"narHash\": )\"[^\"]*\"|\1\"$HASH\"|g" flake.lock
-        perl -0777 -i -pe "s|(\"wallpapers\": \{[\s\S]*?\"locked\": \{[\sS]*?\"lastModified\": )(\d*)|\1$NOW|g" flake.lock
+        if [ -z "$HASH" ]; then echo "ERROR: HASH is empty!"; exit 1; fi
+        perl -0777 -i -pe 's|("wallpapers":\s*\{.*?"locked":\s*\{.*?"narHash":\s*)"[^"]*"|$1"'$HASH'"|s' flake.lock
+        perl -0777 -i -pe 's|("wallpapers":\s*\{.*?"locked":\s*\{.*?"lastModified":\s*)\d+|$1'$NOW'|s' flake.lock
         echo "After edit:"
         awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
+        BLOCK=$(awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock)
+        if [ -z "$BLOCK" ]; then echo "ERROR: wallpapers block is empty after edit!"; exit 1; fi
 
     - name: Check flake syntax
       run: nix flake check --verbose
