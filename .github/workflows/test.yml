@@ -34,7 +34,9 @@ jobs:
         awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock > wallpapers_block.tmp
         cat wallpapers_block.tmp
         if [ -z "$HASH" ]; then echo "ERROR: HASH is empty!"; exit 1; fi
-        perl -pi -e 's|("lastModified":\s*)\d+(,?)|$1'$NOW'$2|' wallpapers_block.tmp
+        echo "DEBUG: wallpapers_block.tmp contents before lastModified edit:"
+        cat wallpapers_block.tmp
+        perl -pi -e 's|^([ \t]*"lastModified": )\d+(,?)$|$1'$NOW'$2|' wallpapers_block.tmp
         perl -pi -e 's|("narHash":\s*)"[^"]*"|$1"'$HASH'"|' wallpapers_block.tmp
         echo "Modified wallpapers block:"
         cat wallpapers_block.tmp
