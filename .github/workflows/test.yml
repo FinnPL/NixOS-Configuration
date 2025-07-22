@@ -24,12 +24,15 @@ jobs:
       run: |
         sudo mkdir -p /usr/share/wallpaper
         echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
+        echo "nix hash path output:"
+        nix hash path /usr/share/wallpaper
         HASH=$(nix hash path /usr/share/wallpaper | tail -n1 | awk '{print $2}')
+        echo "Extracted HASH: $HASH"
         NOW=$(stat -c %Y /usr/share/wallpaper)
-        echo "Calculated hash: $HASH"
         echo "Calculated lastModified: $NOW"
         echo "Before edit:"
         awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
+        if [ -z "$HASH" ]; then echo "ERROR: HASH is empty!"; fi
         sed -i -E "s/(\"wallpapers\": \{[^}]*\"narHash\": )\"[^\"]*\"/\1\"$HASH\"/g" flake.lock
         sed -i -E "s/(\"wallpapers\": \{[^}]*\"lastModified\": )(\d*)/\1$NOW/g" flake.lock
         echo "After edit:"
