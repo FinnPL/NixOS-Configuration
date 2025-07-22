@@ -50,7 +50,7 @@
           background: #${config.lib.stylix.colors.base01};
           margin: 5px;
           padding: 8px 16px;
-          color: #${config.lib.stylix.colors.base0E};
+          color: #${config.lib.stylix.colors.base0F};
       }
       #cava.left {
           border-radius: 24px 10px 24px 10px;
@@ -63,7 +63,7 @@
           margin: 5px 5px;
           padding: 8px 5px;
           border-radius: 16px;
-          color: #${config.lib.stylix.colors.base0E};
+          color: #${config.lib.stylix.colors.base0F};
       }
       #workspaces button {
           padding: 0px 5px;
@@ -129,7 +129,7 @@
           color: #${config.lib.stylix.colors.base05};
       }
       #custom-playerctl.backward {
-          color: #${config.lib.stylix.colors.base0E};
+          color: #${config.lib.stylix.colors.base0F};
           border-radius: 24px 0px 0px 10px;
           padding-left: 16px;
           margin-left: 7px;
@@ -139,7 +139,7 @@
           padding: 0 5px;
       }
       #custom-playerctl.foward {
-          color: #${config.lib.stylix.colors.base0E};
+          color: #${config.lib.stylix.colors.base0F};
           border-radius: 0px 10px 24px 0px;
           padding-right: 12px;
           margin-right: 7px
@@ -188,10 +188,10 @@
           bar_delimiter = 0;
           bars = 18;
           format-icons = [
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▁</span>"
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▂</span>"
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▃</span>"
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▄</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▁</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▂</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▃</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▄</span>"
             "<span foreground='#${config.lib.stylix.colors.base0D}'>▅</span>"
             "<span foreground='#${config.lib.stylix.colors.base0D}'>▆</span>"
             "<span foreground='#${config.lib.stylix.colors.base0D}'>▇</span>"
@@ -213,10 +213,10 @@
           bar_delimiter = 0;
           bars = 18;
           format-icons = [
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▁</span>"
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▂</span>"
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▃</span>"
-            "<span foreground='#${config.lib.stylix.colors.base0E}'>▄</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▁</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▂</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▃</span>"
+            "<span foreground='#${config.lib.stylix.colors.base0F}'>▄</span>"
             "<span foreground='#${config.lib.stylix.colors.base0D}'>▅</span>"
             "<span foreground='#${config.lib.stylix.colors.base0D}'>▆</span>"
             "<span foreground='#${config.lib.stylix.colors.base0D}'>▇</span>"

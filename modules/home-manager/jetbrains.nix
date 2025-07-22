@@ -1,19 +1,31 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  jetbrainsToolboxWithDesktop = pkgs.symlinkJoin {
+    name = "jetbrains-toolbox-with-desktop";
+    paths = [pkgs.jetbrains-toolbox];
+    nativeBuildInputs = [pkgs.makeWrapper];
+    postBuild = ''
+            mkdir -p $out/share/applications
+            cat > $out/share/applications/jetbrains-toolbox.desktop <<EOF
+      [Desktop Entry]
+      Type=Application
+      Name=JetBrains Toolbox
+      Comment=Manage JetBrains IDEs
+      Exec=jetbrains-toolbox
+      Icon=jetbrains-toolbox
+      Terminal=false
+      Categories=Development;IDE;
+      EOF
+    '';
+  };
+in {
   home.packages = [
-    pkgs.jetbrains.idea-ultimate
-    pkgs.jetbrains.pycharm-professional
-    pkgs.jetbrains.clion
-
+    jetbrainsToolboxWithDesktop
     pkgs.openjdk
     pkgs.gcc
   ];
 
   home.sessionVariables = {
     JAVA_HOME = "${pkgs.openjdk}";
-    PATH = "$PATH:${pkgs.openjdk}/bin:${pkgs.gcc}/bin:${pkgs.jetbrains.idea-ultimate}/bin:${pkgs.jetbrains.pycharm-professional}/bin:${pkgs.jetbrains.clion}/bin";
-  };
-  programs.zsh.shellAliases = {
-    idea = "${pkgs.jetbrains.idea-ultimate}/bin/idea-ultimate";
-    pycharm = "${pkgs.jetbrains.pycharm-professional}/bin/pycharm-professional";
+    PATH = "$PATH:${pkgs.openjdk}/bin:${pkgs.gcc}/bin:${pkgs.jetbrains-toolbox}/bin";
   };
 }

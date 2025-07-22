@@ -12,6 +12,7 @@
     traceroute
     wget
     docker
+    dysk
   ];
 
   programs.git = {

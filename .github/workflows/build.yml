@@ -27,6 +27,30 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         skipPush: true
 
+    - name: Prepare /usr/share/wallpaper and update flake.lock hash/timestamp
+      run: |
+        sudo mkdir -p /usr/share/wallpaper
+        echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
+        HASH=$(nix hash path /usr/share/wallpaper)
+        NOW=$(stat -c %Y /usr/share/wallpaper)
+        echo "Updating wallpapers block: lastModified=$NOW, narHash=$HASH"
+        
+        # Extract wallpapers block
+        sed -n '/"wallpapers": {/,/^    },$/p' flake.lock > wallpapers_block.tmp
+        
+        # Update hash and timestamp
+        sed -i '0,/"lastModified": [0-9]\+,/{s|"lastModified": [0-9]\+,|"lastModified": '"$NOW"',|}' wallpapers_block.tmp
+        sed -i 's|"narHash": "[^"]*"|"narHash": "'"$HASH"'"|' wallpapers_block.tmp
+        
+        # Replace the block in flake.lock
+        START=$(grep -n '"wallpapers": {' flake.lock | cut -d: -f1)
+        END=$(awk -v start="$START" 'NR > start && /^    },/ {print NR; exit}' flake.lock)
+        head -n $((START-1)) flake.lock > flake.lock.new
+        cat wallpapers_block.tmp >> flake.lock.new
+        tail -n +$((END+1)) flake.lock >> flake.lock.new
+        mv flake.lock.new flake.lock
+        rm wallpapers_block.tmp
+
     - name: Check flake
       run: nix flake check --verbose
 
@@ -53,6 +77,30 @@ jobs:
         name: hyprland
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         skipPush: true
+
+    - name: Prepare /usr/share/wallpaper and update flake.lock hash/timestamp
+      run: |
+        sudo mkdir -p /usr/share/wallpaper
+        echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
+        HASH=$(nix hash path /usr/share/wallpaper)
+        NOW=$(stat -c %Y /usr/share/wallpaper)
+        echo "Updating wallpapers block: lastModified=$NOW, narHash=$HASH"
+        
+        # Extract wallpapers block
+        sed -n '/"wallpapers": {/,/^    },$/p' flake.lock > wallpapers_block.tmp
+        
+        # Update hash and timestamp
+        sed -i '0,/"lastModified": [0-9]\+,/{s|"lastModified": [0-9]\+,|"lastModified": '"$NOW"',|}' wallpapers_block.tmp
+        sed -i 's|"narHash": "[^"]*"|"narHash": "'"$HASH"'"|' wallpapers_block.tmp
+        
+        # Replace the block in flake.lock
+        START=$(grep -n '"wallpapers": {' flake.lock | cut -d: -f1)
+        END=$(awk -v start="$START" 'NR > start && /^    },/ {print NR; exit}' flake.lock)
+        head -n $((START-1)) flake.lock > flake.lock.new
+        cat wallpapers_block.tmp >> flake.lock.new
+        tail -n +$((END+1)) flake.lock >> flake.lock.new
+        mv flake.lock.new flake.lock
+        rm wallpapers_block.tmp
 
     - name: Evaluate NixOS configuration for ${{ matrix.host }}
       run: |
