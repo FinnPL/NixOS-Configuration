@@ -20,11 +20,11 @@ jobs:
           experimental-features = nix-command flakes
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-    - name: Check flake syntax
-      run: nix flake check --verbose
-
     - name: Ensure wallpaper directory exists
       run: sudo mkdir -p /usr/share/wallpaper
+
+    - name: Check flake syntax
+      run: nix flake check --verbose
 
     - name: Evaluate NixOS configuration
       run: |
