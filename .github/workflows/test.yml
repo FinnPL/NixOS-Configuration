@@ -23,6 +23,9 @@ jobs:
     - name: Check flake syntax
       run: nix flake check --verbose
 
+    - name: Ensure wallpaper directory exists
+      run: sudo mkdir -p /usr/share/wallpaper
+
     - name: Evaluate NixOS configuration
       run: |
         nix eval .#nixosConfigurations.centaur.config.system.build.toplevel.drvPath \

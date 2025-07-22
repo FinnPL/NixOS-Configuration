@@ -54,6 +54,9 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
         skipPush: true
 
+    - name: Ensure wallpaper directory exists
+      run: sudo mkdir -p /usr/share/wallpaper
+
     - name: Evaluate NixOS configuration for ${{ matrix.host }}
       run: |
         echo "� Evaluating NixOS configuration..."
