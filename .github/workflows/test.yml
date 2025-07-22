@@ -43,16 +43,21 @@ jobs:
         echo "Modified wallpapers block:"
         cat wallpapers_block.tmp
         # Replace the wallpapers block using a temporary file approach
-        grep -n '"wallpapers": {' flake.lock | cut -d: -f1 > start_line.tmp
-        grep -n '^    },$' flake.lock | head -n1 | cut -d: -f1 > end_line.tmp
-        START=$(cat start_line.tmp)
-        END=$(cat end_line.tmp)
-        echo "Replacing lines $START to $END"
+        # Find the start line of wallpapers
+        START=$(grep -n '"wallpapers": {' flake.lock | cut -d: -f1)
+        # Find the end line by looking for the closing brace of wallpapers specifically
+        # We need to find the line that closes the wallpapers block, which is the line with },
+        # that comes after the wallpapers start and before the next top-level entry
+        END=$(awk -v start="$START" 'NR > start && /^    },/ {print NR; exit}' flake.lock)
+        echo "Replacing wallpapers block from line $START to $END"
+        if [ -z "$START" ] || [ -z "$END" ]; then
+          echo "ERROR: Could not find wallpapers block boundaries"
+          exit 1
+        fi
         head -n $((START-1)) flake.lock > flake.lock.new
         cat wallpapers_block.tmp >> flake.lock.new
         tail -n +$((END+1)) flake.lock >> flake.lock.new
         mv flake.lock.new flake.lock
-        rm start_line.tmp end_line.tmp
         echo "After edit:"
         sed -n '/"wallpapers": {/,/^    },$/p' flake.lock
         BLOCK=$(sed -n '/"wallpapers": {/,/^    },$/p' flake.lock)
