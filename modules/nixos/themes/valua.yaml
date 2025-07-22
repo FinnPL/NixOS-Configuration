@@ -1,0 +1,21 @@
+system: "base16"
+name: "Valua"     # Based on
+author: "Nonetrix (https://github.com/nonetrix)" # Original author
+variant: "dark"
+palette:
+  base00: "#0a1418"    # Default background
+  base01: "#0D403B"    # Lighter background (status bars, panels)
+  base02: "#2A593E"    # Selection background
+  base03: "#60A672"    # Comments, invisibles, line highlighting
+  base04: "#EAF27B"    # Dark foreground (used for status bars)
+  base05: "#FFFFFF"    # Default foreground, text
+  base06: "#EAF27B"    # Light foreground (not often used)
+  base07: "#FFFFFF"    # Light background (not often used)
+  base08: "#ff3366"    # Red (errors, deletions)
+  base09: "#ffb347"    # Orange (warnings, annotations)
+  base0A: "#ffff66"    # Yellow (constants, classes)
+  base0B: "#33ff99"    # Green (strings, additions)
+  base0C: "#76dbd2"    # Cyan (special, regex)
+  base0D: "#33ccff"    # Blue (keywords, functions)
+  base0E: "#b366ff"    # Purple (types, attributes)
+  base0F: "#c05a8f"    # Pink (special, variables)

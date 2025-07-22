@@ -21,13 +21,26 @@
       url = "github:hyprwm/Hyprland-Plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    wallpapers = {
+      url = "path:/usr/share/wallpaper"; # Path to wallpapers directory
+      flake = false;
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    themes = import ./modules/nixos/themes/defaults.nix;
+    activeTheme = themes.dracula; # Change this to switch themes
+    wallpaperPath = "${inputs.wallpapers}/${activeTheme.wallpaper}";
+  in {
+    theme = builtins.path {
+      path = activeTheme.colorScheme;
+      name = "base16-theme";
+    };
+    wallpaperPath = wallpaperPath;
     nixosConfigurations.centaur = nixpkgs.lib.nixosSystem {
       specialArgs = {inherit inputs;};
       modules = [
@@ -36,7 +49,6 @@
         inputs.stylix.nixosModules.stylix
       ];
     };
-
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
   };
 }

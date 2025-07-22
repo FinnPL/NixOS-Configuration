@@ -17,6 +17,7 @@ This repository contains a complete NixOS configuration featuring:
 ### Prerequisites
 - NixOS installed with flakes enabled
 - Git for cloning this repository
+- Ensure `/usr/share/wallpaper/` exists and contains all wallpapers you want to use for theming
 
 ### Installation
 
@@ -36,6 +37,9 @@ chmod +x deploy.sh
 ```bash
 ./deploy.sh -up
 ```
+
+### Changing Theme
+To change the active theme, edit `flake.nix` and set `activeTheme` to your desired theme (e.g., `themes.mytheme`).
 
 ## Architecture
 
@@ -126,6 +130,23 @@ sudo nix-store --optimize
 ```
 
 ## Customization
+
+### Adding New Designs (Themes)
+
+To add a new theme:
+1. Add your color scheme YAML file to `modules/nixos/themes/` (e.g., `mytheme.yaml`).
+2. Add your wallpaper image to `/usr/share/wallpaper/` (e.g., `mytheme.jpg`).
+3. Edit `modules/nixos/themes/defaults.nix` to include your new theme:
+   ```nix
+   mytheme = {
+     colorScheme = ./mytheme.yaml;
+     wallpaper = "mytheme.jpg";
+   };
+   ```
+
+### Changing Theme
+
+To change the active theme, edit `flake.nix` and set `activeTheme` to your desired theme (e.g., `themes.mytheme`).
 
 ### Adding New Modules
 

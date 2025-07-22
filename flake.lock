@@ -642,7 +642,8 @@
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
         "nixpkgs": "nixpkgs_2",
-        "stylix": "stylix"
+        "stylix": "stylix",
+        "wallpapers": "wallpapers"
       }
     },
     "stylix": {
@@ -786,6 +787,19 @@
         "owner": "tinted-theming",
         "repo": "base16-zed",
         "type": "github"
+      }
+    },
+    "wallpapers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753205958,
+        "narHash": "sha256-COH3R0ZYkCM0OLj8lG4uo/YUQh7oHz9etmHgJDOPLNU=",
+        "path": "/usr/share/wallpaper",
+        "type": "path"
+      },
+      "original": {
+        "path": "/usr/share/wallpaper",
+        "type": "path"
       }
     },
     "xdph": {

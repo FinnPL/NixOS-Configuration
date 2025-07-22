@@ -1,8 +1,12 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
-    #image = ./../../none-nix/wallpapers/203038.jpg;
+    base16Scheme = inputs.self.theme;
+    image = inputs.self.wallpaperPath;
     polarity = "dark";
     fonts = {
       monospace = {

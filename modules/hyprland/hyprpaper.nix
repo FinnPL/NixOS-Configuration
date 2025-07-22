@@ -1,10 +1,10 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: let
-  #wallpaperPath = ../../none-nix/wallpapers/203038.jpg;
-  wallpaperPath = "${config.home.homeDirectory}/Pictures/wallpaper.png";
+  wallpaperPath = inputs.self.wallpaperPath;
 in {
   home.packages = with pkgs; [
     hyprpaper
