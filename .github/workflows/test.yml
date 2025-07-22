@@ -26,8 +26,8 @@ jobs:
         echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
         HASH=$(nix hash path /usr/share/wallpaper | tail -n1 | awk '{print $2}')
         NOW=$(stat -c %Y /usr/share/wallpaper)
-        sed -i "s|\("wallpapers": {[^}]*\"narHash\": \)\"[^"]*\"|\1\"$HASH\"|g" flake.lock
-        sed -i "s|\("wallpapers": {[^}]*\"lastModified\": \)\([0-9]*\)|\1$NOW|g" flake.lock
+        sed -i "s|\(\"wallpapers\": {[^}]*\\\"narHash\\\": \\\"[^\\"]*\\\"\)|\1\\\"$HASH\\\"|g" flake.lock
+        sed -i "s|\(\"wallpapers\": {[^}]*\\\"lastModified\\\": \\)\\([0-9]*\\)|\1$NOW|g" flake.lock
 
     - name: Check flake syntax
       run: nix flake check --verbose
