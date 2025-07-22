@@ -234,8 +234,9 @@
           waves = false;
         };
         clock = {
-          format = " {:%a, %d %m, %H:%M}";
-          format-alt = " {:%d/%m}";
+          format = "{:%H:%M}";
+          format-alt = " {:%a, %d %m, %H:%M:%S}";
+          interval = 1;
           tooltip = true;
           tooltip-format = "<big>{:%Y %m}</big>\n<tt><small>{calendar}</small></tt>";
         };
