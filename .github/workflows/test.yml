@@ -28,10 +28,12 @@ jobs:
         NOW=$(stat -c %Y /usr/share/wallpaper)
         echo "Calculated hash: $HASH"
         echo "Calculated lastModified: $NOW"
-        echo "Before edit:" && grep 'wallpapers' flake.lock -A 10
+        echo "Before edit:"
+        awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
         sed -i -E "s/(\"wallpapers\": \{[^}]*\"narHash\": )\"[^\"]*\"/\1\"$HASH\"/g" flake.lock
         sed -i -E "s/(\"wallpapers\": \{[^}]*\"lastModified\": )(\d*)/\1$NOW/g" flake.lock
-        echo "After edit:" && grep 'wallpapers' flake.lock -A 10
+        echo "After edit:"
+        awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
 
     - name: Check flake syntax
       run: nix flake check --verbose
