@@ -33,8 +33,8 @@ jobs:
         echo "Before edit:"
         awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
         if [ -z "$HASH" ]; then echo "ERROR: HASH is empty!"; fi
-        sed -i -E "s#(\"wallpapers\": \{[^}]*\"narHash\": )\"[^\"]*\"#\1\"$HASH\"#g" flake.lock
-        sed -i -E "s#(\"wallpapers\": \{[^}]*\"lastModified\": )(\d*)#\1$NOW#g" flake.lock
+        perl -0777 -i -pe "s/(\"wallpapers\": \{[\s\S]*?\"locked\": \{[\s\S]*?\"narHash\": )\"[^\"]*\"/\1\"$HASH\"/g" flake.lock
+        perl -0777 -i -pe "s/(\"wallpapers\": \{[\s\S]*?\"locked\": \{[\s\S]*?\"lastModified\": )(\d*)/\1$NOW/g" flake.lock
         echo "After edit:"
         awk '/"wallpapers": \{/ {p=1} p; /}/ && p {p=0}' flake.lock
 
