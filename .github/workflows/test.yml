@@ -24,44 +24,24 @@ jobs:
       run: |
         sudo mkdir -p /usr/share/wallpaper
         echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
-        echo "nix hash path output:"
-        nix hash path /usr/share/wallpaper
         HASH=$(nix hash path /usr/share/wallpaper)
-        echo "Extracted HASH: $HASH"
         NOW=$(stat -c %Y /usr/share/wallpaper)
-        echo "Calculated lastModified: $NOW"
-        echo "Before edit:"
-        # Extract just the wallpapers entry
+        echo "Updating wallpapers block: lastModified=$NOW, narHash=$HASH"
+        
+        # Extract wallpapers block
         sed -n '/"wallpapers": {/,/^    },$/p' flake.lock > wallpapers_block.tmp
-        cat wallpapers_block.tmp
-        if [ -z "$HASH" ]; then echo "ERROR: HASH is empty!"; exit 1; fi
-        echo "DEBUG: wallpapers_block.tmp contents before lastModified edit:"
-        cat wallpapers_block.tmp
-        # Only modify the first occurrence of lastModified (in the locked section)
+        
+        # Update hash and timestamp
         sed -i '0,/"lastModified": [0-9]\+,/{s|"lastModified": [0-9]\+,|"lastModified": '"$NOW"',|}' wallpapers_block.tmp
         sed -i 's|"narHash": "[^"]*"|"narHash": "'"$HASH"'"|' wallpapers_block.tmp
-        echo "Modified wallpapers block:"
-        cat wallpapers_block.tmp
-        # Replace the wallpapers block using a temporary file approach
-        # Find the start line of wallpapers
+        
+        # Replace the block in flake.lock
         START=$(grep -n '"wallpapers": {' flake.lock | cut -d: -f1)
-        # Find the end line by looking for the closing brace of wallpapers specifically
-        # We need to find the line that closes the wallpapers block, which is the line with },
-        # that comes after the wallpapers start and before the next top-level entry
         END=$(awk -v start="$START" 'NR > start && /^    },/ {print NR; exit}' flake.lock)
-        echo "Replacing wallpapers block from line $START to $END"
-        if [ -z "$START" ] || [ -z "$END" ]; then
-          echo "ERROR: Could not find wallpapers block boundaries"
-          exit 1
-        fi
         head -n $((START-1)) flake.lock > flake.lock.new
         cat wallpapers_block.tmp >> flake.lock.new
         tail -n +$((END+1)) flake.lock >> flake.lock.new
         mv flake.lock.new flake.lock
-        echo "After edit:"
-        sed -n '/"wallpapers": {/,/^    },$/p' flake.lock
-        BLOCK=$(sed -n '/"wallpapers": {/,/^    },$/p' flake.lock)
-        if [ -z "$BLOCK" ]; then echo "ERROR: wallpapers block is empty after edit!"; exit 1; fi
         rm wallpapers_block.tmp
     - name: Check flake syntax
       run: nix flake check --verbose
@@ -98,6 +78,30 @@ jobs:
         extra_nix_config: |
           experimental-features = nix-command flakes
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+    - name: Prepare /usr/share/wallpaper and update flake.lock hash/timestamp
+      run: |
+        sudo mkdir -p /usr/share/wallpaper
+        echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
+        HASH=$(nix hash path /usr/share/wallpaper)
+        NOW=$(stat -c %Y /usr/share/wallpaper)
+        echo "Updating wallpapers block: lastModified=$NOW, narHash=$HASH"
+        
+        # Extract wallpapers block
+        sed -n '/"wallpapers": {/,/^    },$/p' flake.lock > wallpapers_block.tmp
+        
+        # Update hash and timestamp
+        sed -i '0,/"lastModified": [0-9]\+,/{s|"lastModified": [0-9]\+,|"lastModified": '"$NOW"',|}' wallpapers_block.tmp
+        sed -i 's|"narHash": "[^"]*"|"narHash": "'"$HASH"'"|' wallpapers_block.tmp
+        
+        # Replace the block in flake.lock
+        START=$(grep -n '"wallpapers": {' flake.lock | cut -d: -f1)
+        END=$(awk -v start="$START" 'NR > start && /^    },/ {print NR; exit}' flake.lock)
+        head -n $((START-1)) flake.lock > flake.lock.new
+        cat wallpapers_block.tmp >> flake.lock.new
+        tail -n +$((END+1)) flake.lock >> flake.lock.new
+        mv flake.lock.new flake.lock
+        rm wallpapers_block.tmp
 
     - name: Dry build NixOS configuration
       run: |
