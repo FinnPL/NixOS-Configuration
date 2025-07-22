@@ -26,7 +26,7 @@ jobs:
         echo "dummy" | sudo tee /usr/share/wallpaper/dummy.jpg
         echo "nix hash path output:"
         nix hash path /usr/share/wallpaper
-        HASH=$(nix hash path /usr/share/wallpaper | tail -n1 | awk '{print $2}')
+        HASH=$(nix hash path /usr/share/wallpaper)
         echo "Extracted HASH: $HASH"
         NOW=$(stat -c %Y /usr/share/wallpaper)
         echo "Calculated lastModified: $NOW"
