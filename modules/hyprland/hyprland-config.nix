@@ -15,6 +15,7 @@
     exec-once = waybar
     exec-once = mako
     exec-once = wl-paste --watch cliphist store
+    exec-once = sleep 3 && vesktop --start-minimized
 
     monitor = eDP-1,1920x1080@60,0x0,1
 
