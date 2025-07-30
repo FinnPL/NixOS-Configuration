@@ -21,7 +21,11 @@ in {
   home.packages = [
     jetbrainsToolboxWithDesktop
     pkgs.openjdk
-    pkgs.gcc
+    pkgs.kotlin
+
+    pkgs.clang
+    pkgs.cmake
+    pkgs.gnumake
   ];
 
   home.sessionVariables = {

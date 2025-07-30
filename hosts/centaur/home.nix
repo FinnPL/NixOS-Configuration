@@ -21,6 +21,8 @@
     ../../modules/home-manager/python-packages.nix
     ../../modules/home-manager/cli-tools.nix
     ../../modules/home-manager/discord.nix
+    ../../modules/home-manager/neovim.nix
+    ../../modules/home-manager/rust.nix
     ../../modules/hyprland/default.nix
   ];
 
