@@ -19,7 +19,20 @@
   # BOOT CONFIGURATION
   # ============================================================================
   boot.loader = {
-    systemd-boot.enable = true;
+    grub = {
+      enable = true;
+      efiSupport = true;
+      device = "nodev";
+      extraEntries = ''
+        menuentry "Red Hat Enterprise Linux 10" {
+          insmod part_gpt
+          insmod xfs
+          search --no-floppy --fs-uuid --set=root fd3258e6-5af2-4c09-9943-398267b04e5b
+          linux /vmlinuz-6.12.0-55.22.1.el10_0.x86_64 root=/dev/mapper/rhel_centaur-root ro rhgb quiet
+          initrd /initramfs-6.12.0-55.22.1.el10_0.x86_64.img
+        }
+      '';
+    };
     efi.canTouchEfiVariables = true;
   };
 

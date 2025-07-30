@@ -332,7 +332,7 @@
           format-ethernet = "󰈀 100% ";
           format-linked = "{ifname} (No IP)";
           format-wifi = "  {signalStrength}%";
-          tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
+          tooltip-format = "Connected to {essid} {ifname} via {gwaddr} | IP: {ipaddr}";
           on-click = "nm-connection-editor";
         };
         position = "top";
