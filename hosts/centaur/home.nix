@@ -40,7 +40,16 @@
   home.packages = [
     pkgs.texlive.combined.scheme-full
     pkgs.protonvpn-gui
-    pkgs.termius
+    (pkgs.termius.overrideAttrs (oldAttrs: {
+      autoPatchelfIgnoreMissingDeps = (oldAttrs.autoPatchelfIgnoreMissingDeps or []) ++ [
+        "libsqlite3.so.0"
+      ];
+      buildInputs = (oldAttrs.buildInputs or []) ++ [
+        pkgs.libGL
+        pkgs.nss
+        pkgs.sqlite
+      ];
+    }))
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
