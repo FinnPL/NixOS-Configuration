@@ -207,6 +207,7 @@
   # ============================================================================
   home-manager = {
     extraSpecialArgs = {inherit inputs;};
+    backupFileExtension = "backup";
     users = {
       "fpl" = import ./home.nix;
     };
