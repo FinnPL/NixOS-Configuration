@@ -12,9 +12,9 @@
       disable_hyprland_logo = true
     }
     exec-once = hyprpaper
-    exec-once = waybar
-    exec-once = mako
+    exec-once = quickshell -p ~/.config/quickshell/shell.qml
     exec-once = wl-paste --watch cliphist store
+    exec-once = sleep 3 && vesktop --start-minimized
 
     monitor = eDP-1,1920x1080@60,0x0,1
 
@@ -71,21 +71,29 @@
       preserve_split = true
     }
 
-    # Window rules
-    windowrule=opacity 0.75 override 0.70 override, class:^(thunar)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(firefox)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(gimp|gwenview|ristretto)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(evince|okular|zathura)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(vlc|mpv)$
+    # Window rules (new v0.52 syntax)
+    windowrule = opacity 0.75 override 0.70 override, match:class thunar
+    windowrule = opacity 0.98 override 0.98 override, match:class firefox
+    windowrule = opacity 0.98 override 0.98 override, match:class vesktop
+    windowrule = opacity 0.98 override 0.98 override, match:class (gimp|gwenview|ristretto)
+    windowrule = opacity 0.98 override 0.98 override, match:class (evince|okular|zathura)
+    windowrule = opacity 0.98 override 0.98 override, match:class (vlc|mpv)
 
 
     $mod = SUPER
     $term = kitty
     $browser = firefox
 
-    # Rofi toggle on Alt+Space
-    bind = ALT, SPACE, exec, pkill rofi || rofi -show drun -no-config -theme-str '@theme "${config.home.homeDirectory}/.config/rofi/adv.rasi"'
-    bind = $mod, V, exec, pkill rofi || (cliphist list | rofi -dmenu | cliphist decode | wl-copy)
+    # Quickshell toggles
+    bind = , XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle
+    bind = $mod, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle
+    bind = $mod, N, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle
+
+    # Overview/App launcher via ALT+SPACE
+    bind = ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle
+
+    # Clipboard via quickshell
+    bind = $mod, V, exec, quickshell msg -p ~/.config/quickshell overview clipboardToggle
 
     # Terminal & browser
     bind = $mod, SPACE, exec, $term

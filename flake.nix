@@ -16,10 +16,16 @@
 
     stylix.url = "github:danth/stylix";
 
+    nixcord.url = "github:kaylorben/nixcord";
+
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/Hyprland-Plugins";
       inputs.hyprland.follows = "hyprland";
+    };
+    quickshell = {
+      url = "github:quickshell-mirror/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     wallpapers = {
       url = "path:/usr/share/wallpaper"; # Path to wallpapers directory
@@ -33,7 +39,7 @@
     ...
   } @ inputs: let
     themes = import ./modules/nixos/themes/defaults.nix;
-    activeTheme = themes.dracula; # Change this to switch themes
+    activeTheme = themes.valua; # Change this to switch themes
     wallpaperPath = "${inputs.wallpapers}/${activeTheme.wallpaper}";
   in {
     theme = builtins.path {
@@ -47,6 +53,15 @@
         ./hosts/centaur/configuration.nix
         inputs.home-manager.nixosModules.default
         inputs.stylix.nixosModules.stylix
+        {
+          home-manager.sharedModules = [
+            inputs.nixcord.homeModules.nixcord
+          ];
+          # Add quickshell overlay
+          nixpkgs.overlays = [
+            inputs.quickshell.overlays.default
+          ];
+        }
       ];
     };
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;

@@ -11,6 +11,9 @@
       plotly
       sympy
       notebook
+      # For quickshell color generation
+      pillow
+      materialyoucolor
     ]);
 in {
   home.packages = [
