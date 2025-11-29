@@ -158,6 +158,11 @@
   # UPower (for battery indicator)
   services.upower.enable = true;
 
+  services.logind = {
+    powerKey = "ignore";
+    powerKeyLongPress = "poweroff";
+  };
+
   # ============================================================================
   # HARDWARE CONFIGURATION
   # ============================================================================

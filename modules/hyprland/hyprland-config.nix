@@ -86,8 +86,9 @@
 
     # Quickshell toggles
     bind = , XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle
-    bind = $mod, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle
-    bind = $mod, N, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle
+    bind = $mod, L, exec, quickshell msg -p ~/.config/quickshell lock activate
+    bind = ALT, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle
+    bind = ALT, C, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle
 
     # Overview/App launcher via ALT+SPACE
     bind = ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle
