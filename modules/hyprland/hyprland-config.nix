@@ -64,7 +64,7 @@
         animation = workspacesIn, 1, 8, winIn, slide
         animation = workspacesOut, 1, 8, winOut, slide
         animation = layersIn, 1, 10, winIn, slide
-        animation = layersOut, 1, 3, layerOut, popin 50%
+        animation = layersOut, 1, 3, layerOut, fade
     }
 
     dwindle {
