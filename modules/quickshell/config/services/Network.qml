@@ -87,11 +87,32 @@ Singleton {
     function changePassword(network: WifiAccessPoint, password: string, username = ""): void {
         // TODO: enterprise wifi with username
         network.askingPassword = false;
+        root.wifiConnectTarget = network;
+        // Determine key management based on security type
+        // WPA3 uses SAE, WPA2 uses wpa-psk
+        const security = network.security?.toUpperCase() ?? "";
+        const keyMgmt = security.includes("WPA3") ? "sae" : "wpa-psk";
+        // Create connection profile and connect using BSSID to avoid SSID encoding issues
+        // The SSID is fetched fresh from nmcli to ensure correct encoding
+        // BSSID_ESC has escaped colons for grep -F matching (nmcli -t output escapes colons with backslash)
+        const bssidEsc = network.bssid.replace(/:/g, "\\:");
+        print("changePassword called - BSSID:", network.bssid, "BSSID_ESC:", bssidEsc, "keyMgmt:", keyMgmt);
         changePasswordProc.exec({
             "environment": {
-                "PASSWORD": password
+                "PASSWORD": password,
+                "BSSID": network.bssid,
+                "BSSID_ESC": bssidEsc,
+                "KEY_MGMT": keyMgmt,
+                "LANG": "C",
+                "LC_ALL": "C"
             },
-            "command": ["bash", "-c", `nmcli connection modify ${network.ssid} wifi-sec.psk "$PASSWORD"`]
+            "command": ["bash", "-c", `
+                SSID=$(nmcli -t -f SSID,BSSID dev wifi list | grep -F "$BSSID_ESC" | head -1 | sed 's/:[^:]*\\\\:[^:]*\\\\:[^:]*\\\\:[^:]*\\\\:[^:]*\\\\:[^:]*$//')
+                echo "Connecting to SSID: $SSID"
+                nmcli c delete "$SSID" 2>/dev/null
+                nmcli c add type wifi con-name "$SSID" ssid "$SSID" wifi.bssid "$BSSID" wifi-sec.key-mgmt "$KEY_MGMT" wifi-sec.psk "$PASSWORD" &&
+                nmcli c up "$SSID"
+            `]
         })
     }
 
@@ -134,9 +155,24 @@ Singleton {
 
     Process {
         id: changePasswordProc
-        onExited: { // Re-attempt connection after changing password
-            connectProc.running = false
-            connectProc.running = true
+        stdout: SplitParser {
+            onRead: line => {
+                print("changePasswordProc stdout:", line)
+                getNetworks.running = true
+            }
+        }
+        stderr: SplitParser {
+            onRead: line => {
+                print("changePasswordProc stderr:", line)
+            }
+        }
+        onExited: (exitCode, exitStatus) => {
+            print("changePasswordProc exited with code:", exitCode)
+            if (root.wifiConnectTarget) {
+                root.wifiConnectTarget.askingPassword = (exitCode !== 0)
+            }
+            root.wifiConnectTarget = null
+            getNetworks.running = true
         }
     }
 
