@@ -96,7 +96,6 @@ Singleton {
         // The SSID is fetched fresh from nmcli to ensure correct encoding
         // BSSID_ESC has escaped colons for grep -F matching (nmcli -t output escapes colons with backslash)
         const bssidEsc = network.bssid.replace(/:/g, "\\:");
-        print("changePassword called - BSSID:", network.bssid, "BSSID_ESC:", bssidEsc, "keyMgmt:", keyMgmt);
         changePasswordProc.exec({
             "environment": {
                 "PASSWORD": password,
@@ -108,7 +107,6 @@ Singleton {
             },
             "command": ["bash", "-c", `
                 SSID=$(nmcli -t -f SSID,BSSID dev wifi list | grep -F "$BSSID_ESC" | head -1 | sed 's/:[^:]*\\\\:[^:]*\\\\:[^:]*\\\\:[^:]*\\\\:[^:]*\\\\:[^:]*$//')
-                echo "Connecting to SSID: $SSID"
                 nmcli c delete "$SSID" 2>/dev/null
                 nmcli c add type wifi con-name "$SSID" ssid "$SSID" wifi.bssid "$BSSID" wifi-sec.key-mgmt "$KEY_MGMT" wifi-sec.psk "$PASSWORD" &&
                 nmcli c up "$SSID"
@@ -156,18 +154,9 @@ Singleton {
     Process {
         id: changePasswordProc
         stdout: SplitParser {
-            onRead: line => {
-                print("changePasswordProc stdout:", line)
-                getNetworks.running = true
-            }
-        }
-        stderr: SplitParser {
-            onRead: line => {
-                print("changePasswordProc stderr:", line)
-            }
+            onRead: getNetworks.running = true
         }
         onExited: (exitCode, exitStatus) => {
-            print("changePasswordProc exited with code:", exitCode)
             if (root.wifiConnectTarget) {
                 root.wifiConnectTarget.askingPassword = (exitCode !== 0)
             }
