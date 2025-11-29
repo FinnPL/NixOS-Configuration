@@ -3,11 +3,17 @@ import qs.modules.common.widgets
 import qs.services
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 
 StyledPopup {
     id: root
-    property string formattedDate: Qt.locale().toString(DateTime.clock.date, "dddd, MMMM dd, yyyy")
-    property string formattedTime: Qt.locale().toString(DateTime.clock.date, "HH:mm:ss")
+
+    property var popupClock: SystemClock {
+        precision: SystemClock.Seconds
+    }
+
+    property string formattedDate: Qt.locale().toString(popupClock.date, "dddd, MMMM dd, yyyy")
+    property string formattedTime: Qt.locale().toString(popupClock.date, "HH:mm:ss")
     property string formattedUptime: DateTime.uptime
     property string todosSection: getUpcomingTodos()
 
