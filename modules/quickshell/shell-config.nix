@@ -80,6 +80,7 @@
     # Minimal set of panels for better performance
     enabledPanels = [
       "iiBar"
+      "iiLock"
       "iiNotificationPopup"
       "iiOnScreenDisplay"
       "iiOverview"
