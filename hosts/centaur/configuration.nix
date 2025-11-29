@@ -112,7 +112,7 @@
     enable = true;
     settings = {
       default_session = let
-        tuigreet = "${lib.getExe pkgs.greetd.tuigreet}";
+        tuigreet = "${lib.getExe pkgs.tuigreet}";
         baseSessionsDir = "${config.services.displayManager.sessionData.desktops}";
         xSessions = "${baseSessionsDir}/share/xsessions";
         waylandSessions = "${baseSessionsDir}/share/wayland-sessions";
@@ -183,7 +183,7 @@
   # SYSTEM PACKAGES
   # ============================================================================
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    tuigreet
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk

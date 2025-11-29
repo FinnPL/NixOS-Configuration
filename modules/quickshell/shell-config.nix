@@ -6,7 +6,7 @@
   ...
 }: let
   # Get quickshell from flake input directly (not from nixpkgs overlay)
-  quickshellPkg = inputs.quickshell.packages.${pkgs.system}.default;
+  quickshellPkg = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   # Qt packages needed for QML imports
   qtDeps = with pkgs; [
