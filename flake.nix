@@ -16,6 +16,8 @@
 
     stylix.url = "github:danth/stylix";
 
+    nixcord.url = "github:kaylorben/nixcord";
+
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/Hyprland-Plugins";
@@ -47,6 +49,11 @@
         ./hosts/centaur/configuration.nix
         inputs.home-manager.nixosModules.default
         inputs.stylix.nixosModules.stylix
+        {
+          home-manager.sharedModules = [
+            inputs.nixcord.homeModules.nixcord
+          ];
+        }
       ];
     };
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;

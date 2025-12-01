@@ -15,6 +15,7 @@
     exec-once = waybar
     exec-once = mako
     exec-once = wl-paste --watch cliphist store
+    exec-once = sleep 3 && vesktop --start-minimized
 
     monitor = eDP-1,1920x1080@60,0x0,1
 
@@ -74,6 +75,7 @@
     # Window rules
     windowrule=opacity 0.75 override 0.70 override, class:^(thunar)$
     windowrule=opacity 0.98 override 0.98 override, class:^(firefox)$
+    windowrule=opacity 0.98 override 0.98 override, class:^(vesktop)$
     windowrule=opacity 0.98 override 0.98 override, class:^(gimp|gwenview|ristretto)$
     windowrule=opacity 0.98 override 0.98 override, class:^(evince|okular|zathura)$
     windowrule=opacity 0.98 override 0.98 override, class:^(vlc|mpv)$
