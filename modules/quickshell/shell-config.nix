@@ -286,6 +286,10 @@ in {
     grim
     slurp
     libnotify
+    # Screenshot tools
+    imagemagick
+    swappy
+    tesseract
     # Power management
     upower
     ddcutil
@@ -300,6 +304,10 @@ in {
     cava
     # Secret storage (for keyring)
     libsecret
+    # Music recognition
+    songrec
+    ffmpeg
+    pulseaudio
   ];
 
   # Install fonts via fonts.fontconfig to ensure they're available system-wide

@@ -158,9 +158,9 @@
   # UPower (for battery indicator)
   services.upower.enable = true;
 
-  services.logind = {
-    powerKey = "ignore";
-    powerKeyLongPress = "poweroff";
+  services.logind.settings.Login = {
+    HandlePowerKey = "ignore";
+    HandlePowerKeyLongPress = "poweroff";
   };
 
   # ============================================================================
