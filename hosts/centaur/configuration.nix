@@ -207,6 +207,46 @@
   # ============================================================================
   programs.zsh.enable = true;
 
+  # Enable nix-ld for running unpatched dynamic binaries (JetBrains IDEs from Toolbox, etc.)
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      # Common libraries needed by JetBrains IDEs and other binaries
+      stdenv.cc.cc.lib
+      zlib
+      glib
+      gtk3
+      libGL
+      libdrm
+      mesa
+      xorg.libX11
+      xorg.libXcursor
+      xorg.libXi
+      xorg.libXrandr
+      xorg.libXrender
+      xorg.libXext
+      xorg.libXfixes
+      xorg.libXtst
+      xorg.libxcb
+      freetype
+      fontconfig
+      libxkbcommon
+      wayland
+      expat
+      nss
+      nspr
+      dbus
+    ];
+  };
+
+  # Symlink /bin/bash for compatibility with scripts that use #!/bin/bash (JetBrains Toolbox scripts, etc.)
+  system.activationScripts.binbash = {
+    text = ''
+      ln -sf ${pkgs.bash}/bin/bash /bin/bash
+    '';
+    deps = [];
+  };
+
   # ============================================================================
   # USER CONFIGURATION
   # ============================================================================
