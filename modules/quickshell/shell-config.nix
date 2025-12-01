@@ -77,10 +77,12 @@
 
   # Generate the illogical-impulse config.json as a file in the nix store
   illogicalImpulseConfig = pkgs.writeText "illogical-impulse-config.json" (builtins.toJSON {
-    # Minimal set of panels for better performance
+    # Panels to enable
     enabledPanels = [
       "iiBar"
+      "iiBackground"
       "iiLock"
+      "iiMediaControls"
       "iiNotificationPopup"
       "iiOnScreenDisplay"
       "iiOverview"
