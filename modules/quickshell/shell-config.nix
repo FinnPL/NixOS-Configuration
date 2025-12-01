@@ -204,7 +204,7 @@
       screenList = [];
       utilButtons = {
         showScreenSnip = true;
-        showColorPicker = false;
+        showColorPicker = true;
         showMicToggle = false;
         showKeyboardToggle = false;
         showDarkModeToggle = false;
@@ -213,8 +213,8 @@
       };
       weather = {
         enable = true;
-        enableGPS = false;
-        city = "Aachen";
+        enableGPS = true;
+        city = "";
         useUSCS = false;
         fetchInterval = 10;
       };
@@ -327,22 +327,7 @@ in {
   # Generate the colors.json file that quickshell reads
   home.file.".local/state/quickshell/user/generated/colors.json".source = colorsJson;
 
-  # Create required directories and copy mutable config files
-  home.activation.quickshellSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    # Create required directories
-    mkdir -p $HOME/.local/state/quickshell/user/generated
-    mkdir -p $HOME/.config/illogical-impulse/translations
-    mkdir -p $HOME/.cache/quickshell/notifications
-
-    # Copy illogical-impulse config if it doesn't exist (makes it writable for quickshell)
-    if [ ! -f "$HOME/.config/illogical-impulse/config.json" ]; then
-      cp ${illogicalImpulseConfig} $HOME/.config/illogical-impulse/config.json
-      chmod 644 $HOME/.config/illogical-impulse/config.json
-    fi
-
-    # Create empty en_US.json translation file if it doesn't exist
-    if [ ! -f "$HOME/.config/illogical-impulse/translations/en_US.json" ]; then
-      echo '{}' > $HOME/.config/illogical-impulse/translations/en_US.json
-    fi
-  '';
+  # Declarative illogical-impulse configuration (managed by Nix)
+  home.file.".config/illogical-impulse/config.json".source = illogicalImpulseConfig;
+  home.file.".config/illogical-impulse/translations/en_US.json".text = "{}";
 }

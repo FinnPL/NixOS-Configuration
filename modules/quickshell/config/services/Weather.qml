@@ -26,7 +26,7 @@ Singleton {
     property var location: ({
         valid: false,
         lat: 0,
-        lon: 0
+        long: 0
     })
 
     property var data: ({
@@ -101,6 +101,8 @@ Singleton {
     }
 
     Component.onCompleted: {
+        root.getData();
+        
         if (!root.gpsActive) return;
         console.info("[WeatherService] Starting the GPS service.");
         positionSource.start();
@@ -156,10 +158,9 @@ Singleton {
     }
 
     Timer {
-        running: !root.gpsActive
+        running: true
         repeat: true
         interval: root.fetchInterval
-        triggeredOnStart: !root.gpsActive
         onTriggered: root.getData()
     }
 }
