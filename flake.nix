@@ -21,8 +21,6 @@
 
     nixcord.url = "github:kaylorben/nixcord";
 
-    nixcord.url = "github:kaylorben/nixcord";
-
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/Hyprland-Plugins";
