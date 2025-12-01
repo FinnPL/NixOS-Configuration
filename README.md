@@ -2,14 +2,15 @@
 [![Test NixOS Configuration](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/test.yml/badge.svg)](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/test.yml)
 [![Evaluate NixOS Configuration](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/build.yml/badge.svg)](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/build.yml)
 
-My NixOS configuration using flakes with Hyprland, Home Manager, and modular structure.
+My NixOS configuration using flakes with Hyprland, Quickshell, Home Manager, and modular structure.
 
 ## Overview
 
 This repository contains a complete NixOS configuration featuring:
 - **Hyprland** - Modern Wayland compositor
+- **Quickshell** - Modern Qt6/QML-based desktop shell
 - **Home Manager** - Declarative user environment management  
-- **Stylix** - System-wide theming
+- **Stylix** - System-wide theming with automatic Quickshell integration
 - **Modular structure** - Clean separation of concerns
 
 ## Quick Start
@@ -66,7 +67,8 @@ The configuration is built using Nix flakes with the following inputs:
 ├── modules/                     # Modular configurations
 │   ├── home-manager/           # User-level modules
 │   ├── hyprland/              # Hyprland-specific modules
-│   └── nixos/                 # System-level modules
+│   ├── nixos/                 # System-level modules
+│   └── quickshell/            # Quickshell desktop shell
 └── none-nix/                   # Non-Nix configuration files
 ```
 
@@ -98,6 +100,30 @@ Located in `modules/hyprland/`:
 - **mako.nix** - Notification daemon
 - **hyprpaper.nix** - Wallpaper management
 - **cliphist.nix** - Clipboard history
+
+### Quickshell Modules
+
+Located in `modules/quickshell/`:
+
+This is a complete Qt6/QML desktop shell based on [illogical-impulse](https://github.com/end-4/dots-hyprland), featuring:
+
+- **shell-config.nix** - Main Quickshell configuration and Nix integration
+- **generate-colors.py** - Automatic Material Design color generation from Stylix theme
+- **config/** - QML shell components including:
+  - **Bar** - Status bar with system info, weather, workspaces
+  - **Overview** - Window overview and app launcher
+  - **Sidebar** - Notifications, calendar, quick toggles
+  - **Lock screen** - Session lock with customizable clock widgets
+  - **On-screen display** - Volume, brightness indicators
+  - **Notification popups** - Desktop notifications
+  - **Session screen** - Power/logout menu
+
+#### Quickshell Features
+
+- **Stylix Integration** - Colors automatically generated from your theme
+- **Declarative Config** - All settings managed through Nix
+- **Services** - Weather, battery, audio, Bluetooth, network status, and more
+- **Search** - App launcher with math, web search, and file search capabilities
 
 ### NixOS Modules
 
