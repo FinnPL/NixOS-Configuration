@@ -13,7 +13,10 @@ Scope {
 
     PanelWindow {
         id: sidebarRoot
-        visible: GlobalStates.sidebarRightOpen
+        visible: true // Always visible to avoid window mapping delay
+        
+        // Use margins to slide off-screen when closed
+        WlrLayershell.margins.right: GlobalStates.sidebarRightOpen ? 0 : -sidebarWidth
 
         function hide() {
             GlobalStates.sidebarRightOpen = false
