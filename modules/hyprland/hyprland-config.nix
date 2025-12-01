@@ -12,8 +12,7 @@
       disable_hyprland_logo = true
     }
     exec-once = hyprpaper
-    exec-once = waybar
-    exec-once = mako
+    exec-once = quickshell -p ~/.config/quickshell/shell.qml
     exec-once = wl-paste --watch cliphist store
     exec-once = sleep 3 && vesktop --start-minimized
 
@@ -64,30 +63,38 @@
         animation = windowsMove, 1, 7, winIn, slide
         animation = workspacesIn, 1, 8, winIn, slide
         animation = workspacesOut, 1, 8, winOut, slide
-        animation = layersIn, 1, 10, winIn, slide
-        animation = layersOut, 1, 3, layerOut, popin 50%
+        animation = layersIn, 1, 7, winIn, slide
+        animation = layersOut, 1, 3, layerOut, slide
     }
 
     dwindle {
       preserve_split = true
     }
 
-    # Window rules
-    windowrule=opacity 0.75 override 0.70 override, class:^(thunar)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(firefox)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(vesktop)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(gimp|gwenview|ristretto)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(evince|okular|zathura)$
-    windowrule=opacity 0.98 override 0.98 override, class:^(vlc|mpv)$
+    # Window rules (new v0.52 syntax)
+    windowrule = opacity 0.75 override 0.70 override, match:class thunar
+    windowrule = opacity 0.98 override 0.98 override, match:class firefox
+    windowrule = opacity 0.98 override 0.98 override, match:class vesktop
+    windowrule = opacity 0.98 override 0.98 override, match:class (gimp|gwenview|ristretto)
+    windowrule = opacity 0.98 override 0.98 override, match:class (evince|okular|zathura)
+    windowrule = opacity 0.98 override 0.98 override, match:class (vlc|mpv)
 
 
     $mod = SUPER
     $term = kitty
     $browser = firefox
 
-    # Rofi toggle on Alt+Space
-    bind = ALT, SPACE, exec, pkill rofi || rofi -show drun -no-config -theme-str '@theme "${config.home.homeDirectory}/.config/rofi/adv.rasi"'
-    bind = $mod, V, exec, pkill rofi || (cliphist list | rofi -dmenu | cliphist decode | wl-copy)
+    # Quickshell toggles
+    bind = , XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle
+    bind = $mod, L, exec, quickshell msg -p ~/.config/quickshell lock activate
+    bind = ALT, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle
+    bind = ALT, C, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle
+
+    # Overview/App launcher via ALT+SPACE
+    bind = ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle
+
+    # Clipboard via quickshell
+    bind = $mod, V, exec, quickshell msg -p ~/.config/quickshell overview clipboardToggle
 
     # Terminal & browser
     bind = $mod, SPACE, exec, $term

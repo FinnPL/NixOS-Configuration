@@ -14,7 +14,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix.url = "github:danth/stylix";
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixcord.url = "github:kaylorben/nixcord";
 
     nixcord.url = "github:kaylorben/nixcord";
 
@@ -22,6 +27,10 @@
     hyprland-plugins = {
       url = "github:hyprwm/Hyprland-Plugins";
       inputs.hyprland.follows = "hyprland";
+    };
+    quickshell = {
+      url = "github:quickshell-mirror/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     wallpapers = {
       url = "path:/usr/share/wallpaper"; # Path to wallpapers directory
@@ -52,6 +61,10 @@
         {
           home-manager.sharedModules = [
             inputs.nixcord.homeModules.nixcord
+          ];
+          # Add quickshell overlay
+          nixpkgs.overlays = [
+            inputs.quickshell.overlays.default
           ];
         }
       ];

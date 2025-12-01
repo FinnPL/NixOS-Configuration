@@ -112,7 +112,7 @@
     enable = true;
     settings = {
       default_session = let
-        tuigreet = "${lib.getExe pkgs.greetd.tuigreet}";
+        tuigreet = "${lib.getExe pkgs.tuigreet}";
         baseSessionsDir = "${config.services.displayManager.sessionData.desktops}";
         xSessions = "${baseSessionsDir}/share/xsessions";
         waylandSessions = "${baseSessionsDir}/share/wayland-sessions";
@@ -155,6 +155,14 @@
   # Bluetooth
   services.blueman.enable = true;
 
+  # UPower (for battery indicator)
+  services.upower.enable = true;
+
+  services.logind.settings.Login = {
+    HandlePowerKey = "ignore";
+    HandlePowerKeyLongPress = "poweroff";
+  };
+
   # ============================================================================
   # HARDWARE CONFIGURATION
   # ============================================================================
@@ -180,16 +188,64 @@
   # SYSTEM PACKAGES
   # ============================================================================
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    tuigreet
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
   ];
 
   # ============================================================================
+  # FONTS
+  # ============================================================================
+  fonts.packages = with pkgs; [
+    material-symbols # Material Symbols Rounded icons for quickshell
+    rubik # Rubik font used by end-4 config
+  ];
+
+  # ============================================================================
   # PROGRAMS
   # ============================================================================
   programs.zsh.enable = true;
+
+  # Enable nix-ld for running unpatched dynamic binaries (JetBrains IDEs from Toolbox, etc.)
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      # Common libraries needed by JetBrains IDEs and other binaries
+      stdenv.cc.cc.lib
+      zlib
+      glib
+      gtk3
+      libGL
+      libdrm
+      mesa
+      xorg.libX11
+      xorg.libXcursor
+      xorg.libXi
+      xorg.libXrandr
+      xorg.libXrender
+      xorg.libXext
+      xorg.libXfixes
+      xorg.libXtst
+      xorg.libxcb
+      freetype
+      fontconfig
+      libxkbcommon
+      wayland
+      expat
+      nss
+      nspr
+      dbus
+    ];
+  };
+
+  # Symlink /bin/bash for compatibility with scripts that use #!/bin/bash (JetBrains Toolbox scripts, etc.)
+  system.activationScripts.binbash = {
+    text = ''
+      ln -sf ${pkgs.bash}/bin/bash /bin/bash
+    '';
+    deps = [];
+  };
 
   # ============================================================================
   # USER CONFIGURATION

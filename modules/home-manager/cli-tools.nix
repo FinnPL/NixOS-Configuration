@@ -17,8 +17,10 @@
 
   programs.git = {
     enable = true;
-    userName = "FinnPL";
-    userEmail = "contact@lippok.eu";
+    settings.user = {
+      name = "FinnPL";
+      email = "contact@lippok.eu";
+    };
   };
 
   programs.btop = {
