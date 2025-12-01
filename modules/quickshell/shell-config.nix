@@ -308,6 +308,8 @@ in {
     songrec
     ffmpeg
     pulseaudio
+    # Night light / blue light filter
+    hyprsunset
   ];
 
   # Install fonts via fonts.fontconfig to ensure they're available system-wide

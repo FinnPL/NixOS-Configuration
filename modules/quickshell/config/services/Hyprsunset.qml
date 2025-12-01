@@ -98,15 +98,13 @@ Singleton {
     Process {
         id: fetchProc
         running: true
-        command: ["bash", "-c", "hyprctl hyprsunset temperature"]
+        command: ["pidof", "hyprsunset"]
         stdout: StdioCollector {
             id: stateCollector
             onStreamFinished: {
                 const output = stateCollector.text.trim();
-                if (output.length == 0 || output.startsWith("Couldn't"))
-                    root.active = false;
-                else
-                    root.active = (output != "6500"); // 6500 is the default when off
+                // pidof returns PID if running, empty if not
+                root.active = output.length > 0;
                 // console.log("[Hyprsunset] Fetched state:", output, "->", root.active);
             }
         }
@@ -132,7 +130,6 @@ Singleton {
         target: Config.options.light.night
         function onColorTemperatureChanged() {
             if (!root.active) return;
-            Hyprland.dispatch(`hyprctl hyprsunset temperature ${Config.options.light.night.colorTemperature}`);
             Quickshell.execDetached(["hyprctl", "hyprsunset", "temperature", `${Config.options.light.night.colorTemperature}`]);
         }
     }
