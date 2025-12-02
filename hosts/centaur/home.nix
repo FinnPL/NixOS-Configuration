@@ -23,6 +23,7 @@
     ../../modules/home-manager/discord.nix
     ../../modules/home-manager/neovim.nix
     ../../modules/home-manager/rust.nix
+    ../../modules/home-manager/haskell.nix
     ../../modules/hyprland/default.nix
   ];
 

@@ -18,4 +18,8 @@
   home.sessionVariables = {
     RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
   };
+
+  programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
+    rust-lang.rust-analyzer
+  ];
 }
