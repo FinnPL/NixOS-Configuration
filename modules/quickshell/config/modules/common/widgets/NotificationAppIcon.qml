@@ -20,6 +20,16 @@ MaterialShape { // App icon
     property real appIconSize: implicitSize * appIconScale
     property real smallAppIconSize: implicitSize * smallAppIconScale
 
+    // Cache initial values to prevent icon changes during delete animations
+    property string cachedAppIcon: ""
+    property string cachedImage: ""
+    property string cachedSummary: ""
+    Component.onCompleted: {
+        cachedAppIcon = appIcon ?? ""
+        cachedImage = image ?? ""
+        cachedSummary = summary ?? ""
+    }
+
     implicitSize: 38 * scale
     property list<var> urgentShapes: [
         MaterialShape.Shape.VerySunny,
@@ -30,12 +40,12 @@ MaterialShape { // App icon
     color: isUrgent ? Appearance.colors.colPrimaryContainer : Appearance.colors.colSecondaryContainer
     Loader {
         id: materialSymbolLoader
-        active: root.appIcon == ""
+        active: root.cachedAppIcon == ""
         anchors.fill: parent
         sourceComponent: MaterialSymbol {
             text: {
                 const defaultIcon = NotificationUtils.findSuitableMaterialSymbol("")
-                const guessedIcon = NotificationUtils.findSuitableMaterialSymbol(root.summary)
+                const guessedIcon = NotificationUtils.findSuitableMaterialSymbol(root.cachedSummary)
                 return (root.urgency == NotificationUrgency.Critical && guessedIcon === defaultIcon) ?
                     "priority_high" : guessedIcon
             }
@@ -48,18 +58,38 @@ MaterialShape { // App icon
     }
     Loader {
         id: appIconLoader
-        active: root.image == "" && root.appIcon != ""
+        active: root.cachedImage == "" && root.cachedAppIcon != ""
         anchors.centerIn: parent
-        sourceComponent: IconImage {
-            id: appIconImage
-            implicitSize: root.appIconSize
-            asynchronous: true
-            source: Quickshell.iconPath(root.appIcon, "image-missing")
+        sourceComponent: Item {
+            implicitWidth: root.appIconSize
+            implicitHeight: root.appIconSize
+            // Use check=true to return empty string if icon doesn't exist
+            property string iconSource: Quickshell.iconPath(root.cachedAppIcon, true)
+            property bool iconValid: iconSource != ""
+            Image {
+                id: appIconImage
+                anchors.fill: parent
+                asynchronous: true
+                source: parent.iconSource
+                sourceSize.width: root.appIconSize
+                sourceSize.height: root.appIconSize
+                visible: parent.iconValid
+            }
+            // Fallback when icon doesn't exist
+            MaterialSymbol {
+                anchors.fill: parent
+                visible: !parent.iconValid
+                text: NotificationUtils.findSuitableMaterialSymbol(root.cachedSummary)
+                color: isUrgent ? Appearance.colors.colOnPrimaryContainer : Appearance.colors.colOnSecondaryContainer
+                iconSize: root.materialIconSize
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
         }
     }
     Loader {
         id: notifImageLoader
-        active: root.image != ""
+        active: root.cachedImage != ""
         anchors.fill: parent
         sourceComponent: Item {
             anchors.fill: parent
@@ -68,18 +98,19 @@ MaterialShape { // App icon
                 anchors.fill: parent
                 readonly property int size: parent.width
 
-                source: root.image
+                source: root.cachedImage
                 fillMode: Image.PreserveAspectCrop
                 cache: false
                 antialiasing: true
                 asynchronous: true
+                visible: status === Image.Ready
 
                 width: size
                 height: size
                 sourceSize.width: size
                 sourceSize.height: size
 
-                layer.enabled: true
+                layer.enabled: status === Image.Ready
                 layer.effect: OpacityMask {
                     maskSource: Rectangle {
                         width: notifImage.size
@@ -88,15 +119,32 @@ MaterialShape { // App icon
                     }
                 }
             }
+            // Fallback icon when image fails to load
+            Loader {
+                active: notifImage.status !== Image.Ready
+                anchors.fill: parent
+                sourceComponent: MaterialSymbol {
+                    text: NotificationUtils.findSuitableMaterialSymbol(root.cachedSummary)
+                    anchors.fill: parent
+                    color: isUrgent ? Appearance.colors.colOnPrimaryContainer : Appearance.colors.colOnSecondaryContainer
+                    iconSize: root.materialIconSize
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
             Loader {
                 id: notifImageAppIconLoader
-                active: root.appIcon != ""
+                // Only show if icon exists and image loaded successfully
+                active: root.cachedAppIcon != "" && notifImage.status === Image.Ready && Quickshell.iconPath(root.cachedAppIcon, true) != ""
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
-                sourceComponent: IconImage {
-                    implicitSize: root.smallAppIconSize
+                sourceComponent: Image {
+                    width: root.smallAppIconSize
+                    height: root.smallAppIconSize
                     asynchronous: true
-                    source: Quickshell.iconPath(root.appIcon, "image-missing")
+                    source: Quickshell.iconPath(root.cachedAppIcon, true)
+                    sourceSize.width: root.smallAppIconSize
+                    sourceSize.height: root.smallAppIconSize
                 }
             }
         }
