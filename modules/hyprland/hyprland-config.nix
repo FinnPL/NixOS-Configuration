@@ -78,6 +78,7 @@
     windowrule = opacity 0.98 override 0.98 override, match:class (gimp|gwenview|ristretto)
     windowrule = opacity 0.98 override 0.98 override, match:class (evince|okular|zathura)
     windowrule = opacity 0.98 override 0.98 override, match:class (vlc|mpv)
+    windowrule = opacity 0.98 override 0.98 override, match:class jetbrains
 
 
     $mod = SUPER
