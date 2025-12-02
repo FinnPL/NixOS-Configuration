@@ -18,7 +18,7 @@
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/jetbrains.nix
     ../../modules/home-manager/thunderbird.nix
-    ../../modules/home-manager/python-packages.nix
+    ../../modules/home-manager/python.nix
     ../../modules/home-manager/cli-tools.nix
     ../../modules/home-manager/discord.nix
     ../../modules/home-manager/neovim.nix
