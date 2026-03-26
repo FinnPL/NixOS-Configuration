@@ -12,6 +12,11 @@ in {
 
   xdg.configFile."hypr/hyprpaper.conf".text = ''
     preload = ${wallpaperPath}
-    wallpaper = eDP-1,${wallpaperPath}
+
+    wallpaper {
+      monitor = eDP-1
+      path = ${wallpaperPath}
+      fit_mode = cover
+    }
   '';
 }

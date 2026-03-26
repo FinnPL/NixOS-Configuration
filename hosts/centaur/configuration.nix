@@ -121,7 +121,7 @@
           "--remember-session"
           "--sessions ${waylandSessions}:${xSessions}"
           "--time"
-          "--cmd Hyprland"
+          "--cmd start-hyprland"
           "--asterisks"
         ];
         flags = lib.concatStringsSep " " tuigreetOptions;
