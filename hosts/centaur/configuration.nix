@@ -206,6 +206,7 @@
   # PROGRAMS
   # ============================================================================
   programs.zsh.enable = true;
+  programs.wireshark.enable = true;
 
   # Enable nix-ld for running unpatched dynamic binaries (JetBrains IDEs from Toolbox, etc.)
   programs.nix-ld = {
@@ -253,7 +254,7 @@
   users.users.fpl = {
     isNormalUser = true;
     description = "fpl";
-    extraGroups = ["networkmanager" "wheel" "bluetooth"];
+    extraGroups = ["networkmanager" "wheel" "bluetooth" "wireshark"];
     shell = pkgs.zsh;
     packages = with pkgs; [];
   };

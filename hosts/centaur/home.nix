@@ -25,6 +25,7 @@
     ../../modules/home-manager/rust.nix
     ../../modules/home-manager/haskell.nix
     ../../modules/hyprland/default.nix
+    ../../modules/home-manager/security-tools.nix
   ];
 
   # This value determines the Home Manager release that your configuration is
