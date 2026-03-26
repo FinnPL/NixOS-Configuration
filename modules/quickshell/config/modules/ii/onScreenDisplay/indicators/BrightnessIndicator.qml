@@ -10,8 +10,8 @@ OsdValueIndicator {
     property var brightnessMonitor: Brightness.getMonitorForScreen(focusedScreen)
 
     icon: Hyprsunset.active ? "routine" : "light_mode"
-    rotateIcon: true
-    scaleIcon: true
+    rotateIcon: false
+    scaleIcon: false
     name: Translation.tr("Brightness")
     value: root.brightnessMonitor?.brightness ?? 50
 }
