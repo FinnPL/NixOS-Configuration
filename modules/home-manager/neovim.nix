@@ -27,7 +27,7 @@
 
       # Git integration
       gitsigns-nvim
-      fugitive
+      vim-fugitive
 
       # UI improvements
       lualine-nvim
@@ -47,7 +47,7 @@
       plenary-nvim
     ];
 
-    extraLuaConfig = ''
+    initLua = ''
       -- Basic settings
       vim.opt.number = true
       vim.opt.relativenumber = true

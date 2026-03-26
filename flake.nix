@@ -42,7 +42,7 @@
     ...
   } @ inputs: let
     themes = import ./modules/nixos/themes/defaults.nix;
-    activeTheme = themes.valua; # Change this to switch themes
+    activeTheme = themes.dracula; # Change this to switch themes
     wallpaperPath = "${inputs.wallpapers}/${activeTheme.wallpaper}";
   in {
     theme = builtins.path {

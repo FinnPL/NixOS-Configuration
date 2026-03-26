@@ -6,7 +6,7 @@
   home.packages = with pkgs; [
     git
     gh
-    neofetch
+    fastfetch
     htop
     btop
     traceroute

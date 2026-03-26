@@ -9,14 +9,14 @@
     blueman
 
     # File manager with improved functionality
-    xfce.thunar
-    xfce.thunar-archive-plugin
-    xfce.thunar-volman
-    xfce.thunar-media-tags-plugin
+    thunar
+    thunar-archive-plugin
+    thunar-volman
+    thunar-media-tags-plugin
     gvfs
 
     # Thumbnail generation for file managers
-    xfce.tumbler # Main thumbnail service
+    tumbler # Main thumbnail service
     ffmpegthumbnailer # Video thumbnails
 
     # Icon themes for better appearance
@@ -49,6 +49,7 @@
   # GTK configuration for better theming
   gtk = {
     enable = true;
+    gtk4.theme = config.gtk.theme;
     iconTheme = {
       name = "Papirus";
       package = pkgs.papirus-icon-theme;
