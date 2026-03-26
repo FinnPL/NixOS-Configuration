@@ -68,6 +68,7 @@
           "winOut, 0.1, 1.0, 0.1, 1.0"
           "smoothOut, 0.5, 0, 0.99, 0.99"
           "layerOut, 0.23, 1, 0.32, 1"
+          "menuPop, 0.1, 1.15, 0.1, 1.0"
         ];
 
         animation = [
@@ -78,6 +79,8 @@
           "workspacesOut, 1, 8, winOut, slide"
           "layersIn, 1, 7, winIn, slide"
           "layersOut, 1, 3, layerOut, slide"
+          "layersIn, 1, 3, menuPop, popin 80%"
+          "layersOut, 1, 3, layerOut, fade"
         ];
       };
 
@@ -94,6 +97,8 @@
         "opacity 0.98 override 0.98 override, match:class (evince|okular|zathura)"
         "opacity 0.98 override 0.98 override, match:class (vlc|mpv)"
         "opacity 0.98 override 0.98 override, match:class jetbrains"
+
+        "animation popin 80%, match:float 1"
       ];
 
       # Variables
