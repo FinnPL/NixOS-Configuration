@@ -121,7 +121,7 @@
           "--remember-session"
           "--sessions ${waylandSessions}:${xSessions}"
           "--time"
-          "--cmd Hyprland"
+          "--cmd start-hyprland"
           "--asterisks"
         ];
         flags = lib.concatStringsSep " " tuigreetOptions;
@@ -206,6 +206,7 @@
   # PROGRAMS
   # ============================================================================
   programs.zsh.enable = true;
+  programs.wireshark.enable = true;
 
   # Enable nix-ld for running unpatched dynamic binaries (JetBrains IDEs from Toolbox, etc.)
   programs.nix-ld = {
@@ -219,15 +220,15 @@
       libGL
       libdrm
       mesa
-      xorg.libX11
-      xorg.libXcursor
-      xorg.libXi
-      xorg.libXrandr
-      xorg.libXrender
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXtst
-      xorg.libxcb
+      libX11
+      libXcursor
+      libXi
+      libXrandr
+      libXrender
+      libXext
+      libXfixes
+      libXtst
+      libxcb
       freetype
       fontconfig
       libxkbcommon
@@ -253,7 +254,7 @@
   users.users.fpl = {
     isNormalUser = true;
     description = "fpl";
-    extraGroups = ["networkmanager" "wheel" "bluetooth"];
+    extraGroups = ["networkmanager" "wheel" "bluetooth" "wireshark"];
     shell = pkgs.zsh;
     packages = with pkgs; [];
   };

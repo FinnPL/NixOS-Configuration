@@ -11,14 +11,18 @@
       plotly
       sympy
       notebook
-      # For quickshell color generation
       pillow
       materialyoucolor
+
+      # Linting / formatting / typing
+      black
+      isort
+      flake8
+      pylint
+      mypy
     ]);
 in {
-  home.packages = [
-    myPythonEnv
-  ];
+  home.packages = [myPythonEnv];
 
   programs.zsh.shellAliases = {
     jn = "${myPythonEnv}/bin/jupyter notebook";
@@ -31,4 +35,8 @@ in {
   home.activation.createNotebooksDir = ''
     mkdir -p ${config.home.homeDirectory}/notebooks
   '';
+
+  programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
+    ms-python.python
+  ];
 }

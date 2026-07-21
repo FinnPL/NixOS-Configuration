@@ -81,13 +81,20 @@
     enabledPanels = [
       "iiBar"
       "iiBackground"
+      "iiDock"
       "iiLock"
       "iiMediaControls"
       "iiNotificationPopup"
       "iiOnScreenDisplay"
+      "iiOverlay"
       "iiOverview"
+      "iiPolkit"
+      "iiRegionSelector"
+      "iiReloadPopup"
+      "iiScreenCorners"
       "iiSessionScreen"
       "iiSidebarRight"
+      "iiVerticalBar"
     ];
     panelFamily = "ii";
     policies = {};

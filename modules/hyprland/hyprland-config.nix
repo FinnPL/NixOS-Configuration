@@ -1,137 +1,164 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: {
   home.packages = with pkgs; [
     jq
   ];
 
-  home.file.".config/hypr/hyprland.conf".text = ''
-    misc {
-      disable_hyprland_logo = true
-    }
-    exec-once = hyprpaper
-    exec-once = quickshell -p ~/.config/quickshell/shell.qml
-    exec-once = wl-paste --watch cliphist store
-    exec-once = sleep 3 && vesktop --start-minimized
+  wayland.windowManager.hyprland = {
+    enable = true;
 
-    monitor = eDP-1,1920x1080@60,0x0,1
+    settings = {
+      misc = {
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
+      };
 
-    # Set Swiss German keyboard layout and enable natural scrolling
-    input {
-      kb_layout = ch
-      kb_variant = de
+      exec-once = [
+        "hyprpaper"
+        "quickshell -p ~/.config/quickshell/shell.qml"
+        "wl-paste --watch cliphist store"
+        "sleep 3 && vesktop --start-minimized"
+      ];
 
-      touchpad {
-        natural_scroll = yes
-      }
-    }
+      monitor = [
+        "eDP-1,1920x1080@60,0x0,1"
+      ];
 
-    decoration {
-      rounding = 10
-      inactive_opacity = 0.75
-      active_opacity = 0.85
+      input = {
+        kb_layout = "ch";
+        kb_variant = "de";
 
-      # Enable transparency/blur
-      blur {
-        enabled = true
-        size = 1
-        passes = 5
-        vibrancy = 0.1696
-        new_optimizations = true
-      }
-    }
+        touchpad = {
+          natural_scroll = true;
+        };
+      };
 
-    general {
-      border_size = 2
-      col.active_border = rgba(${config.lib.stylix.colors.base0D}ff) rgba(${config.lib.stylix.colors.base0C}ff) 45deg
-      col.inactive_border = rgba(${config.lib.stylix.colors.base00}00)
-      resize_on_border = false
-      allow_tearing = false
-      layout = dwindle
-    }
+      decoration = {
+        rounding = 10;
+        inactive_opacity = 0.75;
+        active_opacity = 0.85;
 
-    animations {
-    enabled = true, animations
-        bezier = winIn, 0.1, 1.0, 0.1, 1.0
-        bezier = winOut, 0.1, 1.0, 0.1, 1.0
-        bezier = smoothOut, 0.5, 0, 0.99, 0.99
-        bezier = layerOut,0.23,1,0.32,1
-        animation = windowsIn, 1, 7, winIn, slide
-        animation = windowsOut, 1, 3, smoothOut, slide
-        animation = windowsMove, 1, 7, winIn, slide
-        animation = workspacesIn, 1, 8, winIn, slide
-        animation = workspacesOut, 1, 8, winOut, slide
-        animation = layersIn, 1, 7, winIn, slide
-        animation = layersOut, 1, 3, layerOut, slide
-    }
+        blur = {
+          enabled = true;
+          size = 1;
+          passes = 5;
+          vibrancy = 0.1696;
+          new_optimizations = true;
+        };
+      };
 
-    dwindle {
-      preserve_split = true
-    }
+      general = {
+        border_size = 2;
+        "col.active_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base0D}88) rgba(${config.lib.stylix.colors.base0C}88) 45deg";
+        "col.inactive_border" = lib.mkForce "rgba(${config.lib.stylix.colors.base00}00)";
+        resize_on_border = false;
+        allow_tearing = false;
+        layout = "dwindle";
+      };
 
-    # Window rules (new v0.52 syntax)
-    windowrule = opacity 0.75 override 0.70 override, match:class thunar
-    windowrule = opacity 0.98 override 0.98 override, match:class firefox
-    windowrule = opacity 0.98 override 0.98 override, match:class vesktop
-    windowrule = opacity 0.98 override 0.98 override, match:class (gimp|gwenview|ristretto)
-    windowrule = opacity 0.98 override 0.98 override, match:class (evince|okular|zathura)
-    windowrule = opacity 0.98 override 0.98 override, match:class (vlc|mpv)
+      animations = {
+        enabled = true;
 
+        bezier = [
+          "winIn, 0.1, 1.0, 0.1, 1.0"
+          "winOut, 0.1, 1.0, 0.1, 1.0"
+          "smoothOut, 0.5, 0, 0.99, 0.99"
+          "layerOut, 0.23, 1, 0.32, 1"
+          "menuPop, 0.1, 1.15, 0.1, 1.0"
+        ];
 
-    $mod = SUPER
-    $term = kitty
-    $browser = firefox
+        animation = [
+          "windowsIn, 1, 7, winIn, slide"
+          "windowsOut, 1, 3, smoothOut, slide"
+          "windowsMove, 1, 7, winIn, slide"
+          "workspacesIn, 1, 8, winIn, slide"
+          "workspacesOut, 1, 8, winOut, slide"
+          "layersIn, 1, 7, winIn, slide"
+          "layersOut, 1, 3, layerOut, slide"
+          "layersIn, 1, 3, menuPop, popin 80%"
+          "layersOut, 1, 3, layerOut, fade"
+        ];
+      };
 
-    # Quickshell toggles
-    bind = , XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle
-    bind = $mod, L, exec, quickshell msg -p ~/.config/quickshell lock activate
-    bind = ALT, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle
-    bind = ALT, C, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle
+      dwindle = {
+        preserve_split = true;
+      };
 
-    # Overview/App launcher via ALT+SPACE
-    bind = ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle
+      # Window rules (new v0.52 syntax)
+      windowrule = [
+        "opacity 0.75 override 0.70 override, match:class thunar"
+        "opacity 0.98 override 0.98 override, match:class firefox"
+        "opacity 0.98 override 0.98 override, match:class vesktop"
+        "opacity 0.98 override 0.98 override, match:class (gimp|gwenview|ristretto)"
+        "opacity 0.98 override 0.98 override, match:class (evince|okular|zathura)"
+        "opacity 0.98 override 0.98 override, match:class (vlc|mpv)"
+        "opacity 0.98 override 0.98 override, match:class jetbrains"
 
-    # Clipboard via quickshell
-    bind = $mod, V, exec, quickshell msg -p ~/.config/quickshell overview clipboardToggle
+        "animation popin 80%, match:float 1"
+      ];
 
-    # Terminal & browser
-    bind = $mod, SPACE, exec, $term
-    bind = $mod, F, exec, $browser
+      # Variables
+      "$mod" = "SUPER";
+      "$term" = "kitty";
+      "$browser" = "firefox";
 
-    # Open Thunar with WIN+E
-    bind = $mod, E, exec, thunar
+      bind = [
+        # Quickshell toggles
+        ", XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle"
+        "$mod, L, exec, quickshell msg -p ~/.config/quickshell lock activate"
+        "ALT, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle"
+        "ALT, C, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle"
 
-    # Move focus to different tile
-    bind = ALT, left, movefocus, l
-    bind = ALT, right, movefocus, r
-    bind = ALT, up, movefocus, u
-    bind = ALT, down, movefocus, d
+        # Overview/App launcher via ALT+SPACE
+        "ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle"
 
-    # Resize window
-    bind = $mod+CTRL, left, resizeactive, -30 0
-    bind = $mod+CTRL, right, resizeactive, 30 0
-    bind = $mod+CTRL, up, resizeactive, 0 -30
-    bind = $mod+CTRL, down, resizeactive, 0 30
+        # Clipboard via quickshell
+        "$mod, V, exec, quickshell msg -p ~/.config/quickshell overview clipboardToggle"
 
-    # Move between workspaces
-    bind = $mod+ALT, left, workspace, -1
-    bind = $mod+ALT, right, workspace, +1
+        # Terminal & browser
+        "$mod, SPACE, exec, $term"
+        "$mod, F, exec, $browser"
 
-    # Close window with ALT+Q
-    bind = ALT, Q, killactive,
+        # Open Thunar with WIN+E
+        "$mod, E, exec, thunar"
 
-    # Move active window (with edge detection)
-    bind = $mod, left, exec, ~/.config/hypr/move_or_switch.sh left
-    bind = $mod, right, exec, ~/.config/hypr/move_or_switch.sh right
-    bind = $mod, up, exec, ~/.config/hypr/move_or_switch.sh up
-    bind = $mod, down, exec, ~/.config/hypr/move_or_switch.sh down
+        # Move focus to different tile
+        "ALT, left, movefocus, l"
+        "ALT, right, movefocus, r"
+        "ALT, up, movefocus, u"
+        "ALT, down, movefocus, d"
 
-    # Logout with SUPER+SHIFT+L
-    bind = $mod+SHIFT, L, exec, hyprctl dispatch exit
-  '';
+        # Move between workspaces
+        "$mod+ALT, left, workspace, -1"
+        "$mod+ALT, right, workspace, +1"
 
+        # Close window with ALT+Q
+        "ALT, Q, killactive,"
+
+        # Move active window (with edge detection)
+        "$mod, left, exec, ~/.config/hypr/move_or_switch.sh left"
+        "$mod, right, exec, ~/.config/hypr/move_or_switch.sh right"
+        "$mod, up, exec, ~/.config/hypr/move_or_switch.sh up"
+        "$mod, down, exec, ~/.config/hypr/move_or_switch.sh down"
+
+        # Logout with SUPER+SHIFT+L
+        "$mod+SHIFT, L, exec, hyprctl dispatch exit"
+      ];
+
+      binde = [
+        "$mod+CTRL, left, resizeactive, -30 0"
+        "$mod+CTRL, right, resizeactive, 30 0"
+        "$mod+CTRL, up, resizeactive, 0 -30"
+        "$mod+CTRL, down, resizeactive, 0 30"
+      ];
+    };
+  };
+
+  # Keep your bash script as an external executable file exactly as it was
   home.file = {
     ".config/hypr/move_or_switch.sh" = {
       text = builtins.readFile ../../none-nix/hypr/move_or_switch.sh;

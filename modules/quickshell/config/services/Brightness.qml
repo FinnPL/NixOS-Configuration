@@ -31,14 +31,14 @@ Singleton {
         const focusedName = Hyprland.focusedMonitor.name;
         const monitor = monitors.find(m => focusedName === m.screen.name);
         if (monitor)
-            monitor.setBrightness(monitor.brightness + 0.05);
+            monitor.setBrightness(monitor.brightness + 0.01); // Changed from 0.05 to 0.01
     }
 
     function decreaseBrightness(): void {
         const focusedName = Hyprland.focusedMonitor.name;
         const monitor = monitors.find(m => focusedName === m.screen.name);
         if (monitor)
-            monitor.setBrightness(monitor.brightness - 0.05);
+            monitor.setBrightness(monitor.brightness - 0.01); // Changed from 0.05 to 0.01
     }
 
     reloadableId: "brightness"
@@ -77,10 +77,6 @@ Singleton {
         onExited: root.ddcDetectFinished()
     }
 
-    Process {
-        id: setProc
-    }
-
     component BrightnessMonitor: QtObject {
         id: monitor
 
@@ -104,10 +100,6 @@ Singleton {
             enabled: false
         }
         
-        onMultipliedBrightnessChanged: {
-            setTimer.restart();
-        }
-
         function initialize() {
             monitor.ready = false;
             const match = root.ddcMonitors.find(m => m.name === screen.name && !root.monitors.slice(0, root.monitors.indexOf(this)).some(mon => mon.busNum === m.busNum));
@@ -132,26 +124,37 @@ Singleton {
         }
 
         // Shorter delay for more responsive brightness changes
+        property bool pendingSync: false
         property var setTimer: Timer {
             id: setTimer
-            interval: monitor.isDdc ? 300 : 50
+            interval: 100
             onTriggered: {
-                syncBrightness();
+                if (monitor.pendingSync) {
+                    monitor.pendingSync = false;
+                    monitor.executeBrightnessCommand();
+                }
             }
         }
 
-        function syncBrightness() {
+        onMultipliedBrightnessChanged: {
+            if (!setTimer.running) {
+                executeBrightnessCommand();
+            } else {
+                pendingSync = true;
+            }
+        }
+
+        function executeBrightnessCommand() {
+            setTimer.start(); // Start the cooldown
             const brightnessValue = Math.max(monitor.multipliedBrightness, 0);
             if (isDdc) {
                 const rawValueRounded = Math.max(Math.floor(brightnessValue * monitor.rawMaxBrightness), 1);
-                setProc.command = ["ddcutil", "-b", busNum, "setvcp", "10", rawValueRounded];
-                setProc.startDetached();
+                Quickshell.execDetached(["ddcutil", "-b", monitor.busNum, "setvcp", "10", rawValueRounded.toString()]);
             } else {
                 const valuePercentNumber = Math.floor(brightnessValue * 100);
                 let valuePercent = `${valuePercentNumber}%`;
-                if (valuePercentNumber == 0) valuePercent = "1"; // Prevent fully black
-                setProc.command = ["brightnessctl", "--class", "backlight", "s", valuePercent, "--quiet"];
-                setProc.startDetached();
+                if (valuePercentNumber === 0) valuePercent = "1"; // Prevent fully black
+                Quickshell.execDetached(["brightnessctl", "--class", "backlight", "s", valuePercent, "--quiet"]);
             }
         }
 

@@ -136,7 +136,7 @@ in {
         biggerStreamPreview.enable = true;
         messageLogger.enable = true;
         callTimer.enable = true;
-        clearUrLs.enable = true;
+        ClearURLs.enable = true;
         permissionsViewer.enable = true;
         platformIndicators.enable = true;
         relationshipNotifier.enable = true;

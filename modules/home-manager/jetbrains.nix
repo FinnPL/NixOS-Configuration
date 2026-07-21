@@ -54,5 +54,6 @@ in {
   home.sessionVariables = {
     JAVA_HOME = "${pkgs.openjdk}";
     PATH = "$PATH:${pkgs.openjdk}/bin:${pkgs.gcc}/bin:${pkgs.jetbrains-toolbox}/bin";
+    _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 }

@@ -42,6 +42,7 @@ Rectangle {
             sourceComponent: QuickSlider {
                 materialSymbol: "brightness_6"
                 value: root.brightnessMonitor.brightness
+                stepSize: 0.01
                 onMoved: {
                     root.brightnessMonitor.setBrightness(value)
                 }

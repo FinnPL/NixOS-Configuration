@@ -18,12 +18,14 @@
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/jetbrains.nix
     ../../modules/home-manager/thunderbird.nix
-    ../../modules/home-manager/python-packages.nix
+    ../../modules/home-manager/python.nix
     ../../modules/home-manager/cli-tools.nix
     ../../modules/home-manager/discord.nix
     ../../modules/home-manager/neovim.nix
     ../../modules/home-manager/rust.nix
+    ../../modules/home-manager/haskell.nix
     ../../modules/hyprland/default.nix
+    ../../modules/home-manager/security-tools.nix
   ];
 
   # This value determines the Home Manager release that your configuration is
