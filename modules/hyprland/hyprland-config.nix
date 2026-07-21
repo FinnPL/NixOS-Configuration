@@ -3,12 +3,20 @@
   keyboardLayout ? "ch",
   keyboardVariant ? "de",
   enableTouchpad ? true,
+  workspacesPerMonitor ? null,
 }: {
   config,
   pkgs,
   lib,
   ...
-}: {
+}: let
+  wpm = toString (
+    if workspacesPerMonitor == null
+    then 0
+    else workspacesPerMonitor
+  );
+  perMonitor = workspacesPerMonitor != null;
+in {
   home.packages = with pkgs; [
     jq
   ];
@@ -111,48 +119,54 @@
       "$term" = "kitty";
       "$browser" = "firefox";
 
-      bind = [
-        # Quickshell toggles
-        ", XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle"
-        "$mod, L, exec, quickshell msg -p ~/.config/quickshell lock activate"
-        "ALT, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle"
-        "ALT, C, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle"
+      bind =
+        [
+          # Quickshell toggles
+          ", XF86PowerOff, exec, quickshell msg -p ~/.config/quickshell session toggle"
+          "$mod, L, exec, quickshell msg -p ~/.config/quickshell lock activate"
+          "ALT, Tab, exec, quickshell msg -p ~/.config/quickshell overview toggle"
+          "ALT, C, exec, quickshell msg -p ~/.config/quickshell sidebarRight toggle"
 
-        # Overview/App launcher via ALT+SPACE
-        "ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle"
+          # Overview/App launcher via ALT+SPACE
+          "ALT, SPACE, exec, quickshell msg -p ~/.config/quickshell overview toggle"
 
-        # Clipboard via quickshell
-        "$mod, V, exec, quickshell msg -p ~/.config/quickshell overview clipboardToggle"
+          # Clipboard via quickshell
+          "$mod, V, exec, quickshell msg -p ~/.config/quickshell overview clipboardToggle"
 
-        # Terminal & browser
-        "$mod, SPACE, exec, $term"
-        "$mod, F, exec, $browser"
+          # Terminal & browser
+          "$mod, SPACE, exec, $term"
+          "$mod, F, exec, $browser"
 
-        # Open Thunar with WIN+E
-        "$mod, E, exec, thunar"
+          # Open Thunar with WIN+E
+          "$mod, E, exec, thunar"
 
-        # Move focus to different tile
-        "ALT, left, movefocus, l"
-        "ALT, right, movefocus, r"
-        "ALT, up, movefocus, u"
-        "ALT, down, movefocus, d"
+          # Move focus to different tile
+          "ALT, left, movefocus, l"
+          "ALT, right, movefocus, r"
+          "ALT, up, movefocus, u"
+          "ALT, down, movefocus, d"
 
-        # Move between workspaces
-        "$mod+ALT, left, workspace, -1"
-        "$mod+ALT, right, workspace, +1"
+          # Switch between workspaces
+          "$mod+ALT, left, exec, ~/.config/hypr/move_or_switch.sh switch left ${wpm}"
+          "$mod+ALT, right, exec, ~/.config/hypr/move_or_switch.sh switch right ${wpm}"
 
-        # Close window with ALT+Q
-        "ALT, Q, killactive,"
+          # Close window with ALT+Q
+          "ALT, Q, killactive,"
 
-        # Move active window (with edge detection)
-        "$mod, left, exec, ~/.config/hypr/move_or_switch.sh left"
-        "$mod, right, exec, ~/.config/hypr/move_or_switch.sh right"
-        "$mod, up, exec, ~/.config/hypr/move_or_switch.sh up"
-        "$mod, down, exec, ~/.config/hypr/move_or_switch.sh down"
+          # Move active window (with edge detection)
+          "$mod, left, exec, ~/.config/hypr/move_or_switch.sh move left ${wpm}"
+          "$mod, right, exec, ~/.config/hypr/move_or_switch.sh move right ${wpm}"
+          "$mod, up, exec, ~/.config/hypr/move_or_switch.sh move up ${wpm}"
+          "$mod, down, exec, ~/.config/hypr/move_or_switch.sh move down ${wpm}"
 
-        # Logout with SUPER+SHIFT+L
-        "$mod+SHIFT, L, exec, hyprctl dispatch exit"
-      ];
+          # Logout with SUPER+SHIFT+L
+          "$mod+SHIFT, L, exec, hyprctl dispatch exit"
+        ]
+        ++ lib.optionals perMonitor [
+          # Move active window to the adjacent monitor
+          "$mod+SHIFT, left, exec, ~/.config/hypr/move_or_switch.sh monitor left ${wpm}"
+          "$mod+SHIFT, right, exec, ~/.config/hypr/move_or_switch.sh monitor right ${wpm}"
+        ];
 
       binde = [
         "$mod+CTRL, left, resizeactive, -30 0"

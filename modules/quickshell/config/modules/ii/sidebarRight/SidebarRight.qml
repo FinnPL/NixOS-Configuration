@@ -11,67 +11,82 @@ Scope {
     id: root
     property int sidebarWidth: Appearance.sizes.sidebarWidth
 
-    PanelWindow {
-        id: sidebarRoot
-        visible: true // Always visible to avoid window mapping delay
-        
-        // Use margins to slide off-screen when closed
-        WlrLayershell.margins.right: GlobalStates.sidebarRightOpen ? 0 : -sidebarWidth
+    // Records the focused monitor so the sidebar opens where it was triggered.
+    function captureMonitor() {
+        GlobalStates.sidebarRightMonitor = Hyprland.focusedMonitor?.name ?? "";
+    }
 
-        function hide() {
-            GlobalStates.sidebarRightOpen = false
-        }
+    Variants {
+        // One window per monitor; only the captured one slides into view.
+        model: Quickshell.screens
+        PanelWindow {
+            id: sidebarRoot
+            required property var modelData
+            screen: modelData
+            // This instance is the active one when its monitor matches the captured monitor.
+            readonly property bool shouldShow: GlobalStates.sidebarRightOpen
+                && (GlobalStates.sidebarRightMonitor === modelData.name)
+            visible: true // Always visible to avoid window mapping delay
 
-        exclusiveZone: 0
-        implicitWidth: sidebarWidth
-        WlrLayershell.namespace: "quickshell:sidebarRight"
-        // Hyprland 0.49: Focus is always exclusive and setting this breaks mouse focus grab
-        // WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-        color: "transparent"
+            // Use margins to slide off-screen when closed / not the active monitor
+            WlrLayershell.margins.right: shouldShow ? 0 : -sidebarWidth
 
-        anchors {
-            top: true
-            right: true
-            bottom: true
-        }
-
-        HyprlandFocusGrab {
-            id: grab
-            windows: [ sidebarRoot ]
-            active: GlobalStates.sidebarRightOpen
-            onCleared: () => {
-                if (!active) sidebarRoot.hide()
+            function hide() {
+                GlobalStates.sidebarRightOpen = false
             }
-        }
 
-        Loader {
-            id: sidebarContentLoader
-            active: GlobalStates.sidebarRightOpen || Config?.options.sidebar.keepRightSidebarLoaded
+            exclusiveZone: 0
+            implicitWidth: sidebarWidth
+            WlrLayershell.namespace: "quickshell:sidebarRight"
+            // Hyprland 0.49: Focus is always exclusive and setting this breaks mouse focus grab
+            // WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+            color: "transparent"
+
             anchors {
-                fill: parent
-                margins: Appearance.sizes.hyprlandGapsOut
-                leftMargin: Appearance.sizes.elevationMargin
+                top: true
+                right: true
+                bottom: true
             }
-            width: sidebarWidth - Appearance.sizes.hyprlandGapsOut - Appearance.sizes.elevationMargin
-            height: parent.height - Appearance.sizes.hyprlandGapsOut * 2
 
-            focus: GlobalStates.sidebarRightOpen
-            Keys.onPressed: (event) => {
-                if (event.key === Qt.Key_Escape) {
-                    sidebarRoot.hide();
+            HyprlandFocusGrab {
+                id: grab
+                windows: [ sidebarRoot ]
+                active: sidebarRoot.shouldShow
+                onCleared: () => {
+                    if (!active) sidebarRoot.hide()
                 }
             }
 
-            sourceComponent: SidebarRightContent {}
+            Loader {
+                id: sidebarContentLoader
+                active: sidebarRoot.shouldShow || Config?.options.sidebar.keepRightSidebarLoaded
+                anchors {
+                    fill: parent
+                    margins: Appearance.sizes.hyprlandGapsOut
+                    leftMargin: Appearance.sizes.elevationMargin
+                }
+                width: sidebarWidth - Appearance.sizes.hyprlandGapsOut - Appearance.sizes.elevationMargin
+                height: parent.height - Appearance.sizes.hyprlandGapsOut * 2
+
+                focus: sidebarRoot.shouldShow
+                Keys.onPressed: (event) => {
+                    if (event.key === Qt.Key_Escape) {
+                        sidebarRoot.hide();
+                    }
+                }
+
+                sourceComponent: SidebarRightContent {}
+            }
+
+
         }
-
-
     }
 
     IpcHandler {
         target: "sidebarRight"
 
         function toggle(): void {
+            if (!GlobalStates.sidebarRightOpen) root.captureMonitor();
             GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
         }
 
@@ -80,6 +95,7 @@ Scope {
         }
 
         function open(): void {
+            root.captureMonitor();
             GlobalStates.sidebarRightOpen = true;
         }
     }
@@ -89,6 +105,7 @@ Scope {
         description: "Toggles right sidebar on press"
 
         onPressed: {
+            if (!GlobalStates.sidebarRightOpen) root.captureMonitor();
             GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
         }
     }
@@ -97,6 +114,7 @@ Scope {
         description: "Opens right sidebar on press"
 
         onPressed: {
+            root.captureMonitor();
             GlobalStates.sidebarRightOpen = true;
         }
     }

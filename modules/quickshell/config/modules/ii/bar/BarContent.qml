@@ -17,6 +17,12 @@ Item { // Bar content region
     property real useShortenedForm: (Appearance.sizes.barHellaShortenScreenWidthThreshold >= screen?.width) ? 2 : (Appearance.sizes.barShortenScreenWidthThreshold >= screen?.width) ? 1 : 0
     readonly property int centerSideModuleWidth: (useShortenedForm == 2) ? Appearance.sizes.barCenterSideModuleWidthHellaShortened : (useShortenedForm == 1) ? Appearance.sizes.barCenterSideModuleWidthShortened : Appearance.sizes.barCenterSideModuleWidth
 
+    // Toggle the right sidebar, opening it on THIS bar's monitor (the one clicked).
+    function toggleRightSidebar() {
+        GlobalStates.sidebarRightMonitor = root.screen?.name ?? GlobalStates.sidebarRightMonitor;
+        GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+    }
+
     component VerticalBarSeparator: Rectangle {
         Layout.topMargin: Appearance.sizes.baseBarHeight / 3
         Layout.bottomMargin: Appearance.sizes.baseBarHeight / 3
@@ -159,7 +165,7 @@ Item { // Bar content region
             implicitHeight: rightCenterGroupContent.implicitHeight
 
             onPressed: {
-                GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+                root.toggleRightSidebar();
             }
 
             BarGroup {
@@ -202,7 +208,7 @@ Item { // Bar content region
         onMovedAway: GlobalStates.osdVolumeOpen = false;
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
-                GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+                root.toggleRightSidebar();
             }
         }
 
@@ -247,7 +253,7 @@ Item { // Bar content region
                 }
 
                 onPressed: {
-                    GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+                    root.toggleRightSidebar();
                 }
 
                 RowLayout {

@@ -24,7 +24,9 @@ Scope {
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
             property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
             screen: modelData
-            visible: GlobalStates.overviewOpen
+            // Only show on the monitor that currently has focus, so the search/overview
+            // doesn't get mirrored onto every screen at once.
+            visible: GlobalStates.overviewOpen && root.monitorIsFocused
 
             WlrLayershell.namespace: "quickshell:overview"
             WlrLayershell.layer: WlrLayer.Overlay

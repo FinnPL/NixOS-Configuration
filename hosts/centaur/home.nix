@@ -33,7 +33,7 @@
     })
     ../../modules/hyprland/hyprpaper.nix
     ../../modules/hyprland/cliphist.nix
-    ../../modules/quickshell/shell-config.nix
+    (import ../../modules/quickshell/shell-config.nix {})
   ];
 
   # This value determines the Home Manager release that your configuration is
