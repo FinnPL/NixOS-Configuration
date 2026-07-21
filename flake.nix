@@ -42,7 +42,7 @@
     ...
   } @ inputs: let
     themes = import ./modules/nixos/themes/defaults.nix;
-    activeTheme = themes.dracula; # Change this to switch themes
+    activeTheme = themes.valua; # Change this to switch themes
     wallpaperPath = "${inputs.wallpapers}/${activeTheme.wallpaper}";
   in {
     theme = builtins.path {
@@ -61,6 +61,22 @@
             inputs.nixcord.homeModules.nixcord
           ];
           # Add quickshell overlay
+          nixpkgs.overlays = [
+            inputs.quickshell.overlays.default
+          ];
+        }
+      ];
+    };
+    nixosConfigurations.orthrus = nixpkgs.lib.nixosSystem {
+      specialArgs = {inherit inputs;};
+      modules = [
+        ./hosts/orthrus/configuration.nix
+        inputs.home-manager.nixosModules.default
+        inputs.stylix.nixosModules.stylix
+        {
+          home-manager.sharedModules = [
+            inputs.nixcord.homeModules.nixcord
+          ];
           nixpkgs.overlays = [
             inputs.quickshell.overlays.default
           ];

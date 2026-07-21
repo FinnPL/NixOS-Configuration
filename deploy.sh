@@ -4,7 +4,7 @@ set -euo pipefail
 
 # Variables
 FLAKE_PATH="."
-HOST="centaur"
+HOST="${1:-$(hostname)}"
 
 # Check for required commands
 command -v nixos-rebuild >/dev/null 2>&1 || { echo "nixos-rebuild not found."; exit 1; }

@@ -24,8 +24,16 @@
     ../../modules/home-manager/neovim.nix
     ../../modules/home-manager/rust.nix
     ../../modules/home-manager/haskell.nix
-    ../../modules/hyprland/default.nix
     ../../modules/home-manager/security-tools.nix
+    (import ../../modules/hyprland/hyprland-config.nix {
+      monitorConfig = "monitor = eDP-1,1920x1080@60,0x0,1";
+      keyboardLayout = "ch";
+      keyboardVariant = "de";
+      enableTouchpad = true;
+    })
+    ../../modules/hyprland/hyprpaper.nix
+    ../../modules/hyprland/cliphist.nix
+    ../../modules/quickshell/shell-config.nix
   ];
 
   # This value determines the Home Manager release that your configuration is

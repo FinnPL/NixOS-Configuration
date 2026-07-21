@@ -363,7 +363,7 @@
     # Language servers
     nixd
     rust-analyzer
-    nodePackages.typescript-language-server
+    typescript-language-server
     pyright
     clang-tools
     jdt-language-server

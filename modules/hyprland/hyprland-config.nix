@@ -1,4 +1,9 @@
 {
+  monitorConfig ? "monitor = eDP-1,1920x1080@60,0x0,1",
+  keyboardLayout ? "ch",
+  keyboardVariant ? "de",
+  enableTouchpad ? true,
+}: {
   config,
   pkgs,
   lib,
@@ -10,6 +15,8 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+
+    configType = "hyprlang";
 
     settings = {
       misc = {
@@ -24,18 +31,16 @@
         "sleep 3 && vesktop --start-minimized"
       ];
 
-      monitor = [
-        "eDP-1,1920x1080@60,0x0,1"
-      ];
-
-      input = {
-        kb_layout = "ch";
-        kb_variant = "de";
-
-        touchpad = {
-          natural_scroll = true;
+      input =
+        {
+          kb_layout = keyboardLayout;
+          kb_variant = keyboardVariant;
+        }
+        // lib.optionalAttrs enableTouchpad {
+          touchpad = {
+            natural_scroll = true;
+          };
         };
-      };
 
       decoration = {
         rounding = 10;
@@ -156,6 +161,8 @@
         "$mod+CTRL, down, resizeactive, 0 30"
       ];
     };
+
+    extraConfig = monitorConfig;
   };
 
   # Keep your bash script as an external executable file exactly as it was
