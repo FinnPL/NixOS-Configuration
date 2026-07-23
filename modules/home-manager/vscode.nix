@@ -3,7 +3,10 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs; [pkgs.vscode];
+  home.file.".vscode/argv.json".text = builtins.toJSON {
+    "enable-crash-reporter" = false;
+    "password-store" = "gnome-libsecret";
+  };
 
   programs.vscode = {
     enable = true;

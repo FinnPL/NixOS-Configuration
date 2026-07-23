@@ -4,7 +4,6 @@
   inputs,
   ...
 }: {
-
   stylix.targets.firefox = {
     enable = true;
     profileNames = ["fpl"];
