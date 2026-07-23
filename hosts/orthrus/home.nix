@@ -59,11 +59,22 @@
 
   home.stateVersion = "26.05";
 
-  home.packages = with pkgs; [
-    mangohud
-    gamemode
-    protonup-qt
-  ];
+  home.packages = with pkgs; [];
+
+  programs.mangohud = {
+    enable = true;
+    settings = {
+      fps_limit = 141;
+      fps = true;
+      frametime = true;
+      gpu_stats = true;
+      gpu_temp = true;
+      cpu_stats = true;
+      cpu_temp = true;
+      vram = true;
+      ram = true;
+    };
+  };
 
   home.sessionVariables = {
     BROWSER = "firefox";

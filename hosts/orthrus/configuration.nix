@@ -10,6 +10,7 @@
     inputs.home-manager.nixosModules.default
     ../../modules/nixos/auto.nix
     ../../modules/nixos/stylix-config.nix
+    ../../modules/nixos/steam.nix
   ];
 
   # ============================================================================
@@ -186,18 +187,6 @@
     material-symbols
     rubik
   ];
-
-  # ============================================================================
-  # GAMING
-  # ============================================================================
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    gamescopeSession.enable = true;
-  };
-
-  programs.gamemode.enable = true;
 
   # ============================================================================
   # PROGRAMS
