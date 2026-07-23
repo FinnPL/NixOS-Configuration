@@ -4,7 +4,6 @@
   inputs,
   ...
 }: {
-  home.packages = with pkgs; [firefox];
 
   stylix.targets.firefox = {
     enable = true;
