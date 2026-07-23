@@ -71,27 +71,5 @@
     SHELL = "${pkgs.zsh}/bin/zsh";
   };
 
-  xdg.configFile."hypr/hyprpaper.conf".text = lib.mkForce ''
-    preload = ${inputs.self.wallpaperPath}
-
-    wallpaper {
-      monitor = DP-1
-      path = ${inputs.self.wallpaperPath}
-      fit_mode = cover
-    }
-
-    wallpaper {
-      monitor = DP-2
-      path = ${inputs.self.wallpaperPath}
-      fit_mode = cover
-    }
-
-    wallpaper {
-      monitor = HDMI-A-2
-      path = ${inputs.self.wallpaperPath}
-      fit_mode = cover
-    }
-  '';
-
   programs.home-manager.enable = true;
 }

@@ -33,7 +33,6 @@ in {
       };
 
       exec-once = [
-        "hyprpaper"
         "quickshell -p ~/.config/quickshell/shell.qml"
         "wl-paste --watch cliphist store"
         "sleep 3 && vesktop --start-minimized"
