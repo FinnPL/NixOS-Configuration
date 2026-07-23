@@ -12,6 +12,7 @@
 
   programs.firefox = {
     enable = true;
+    configPath = ".mozilla/firefox";
     profiles.fpl = {
       isDefault = true;
       settings = {

@@ -69,6 +69,7 @@
     BROWSER = "firefox";
     EDITOR = "nvim";
     SHELL = "${pkgs.zsh}/bin/zsh";
+    MOZ_LEGACY_PROFILES = "1";
   };
 
   programs.home-manager.enable = true;
