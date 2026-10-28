@@ -48,8 +48,8 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    pkgs.texlive.combined.scheme-full
-    pkgs.protonvpn-gui
+    pkgs.texliveFull
+    pkgs.proton-vpn
     (pkgs.termius.overrideAttrs (oldAttrs: {
       autoPatchelfIgnoreMissingDeps =
         (oldAttrs.autoPatchelfIgnoreMissingDeps or [])

@@ -96,7 +96,6 @@ Located in `modules/hyprland/`:
 - **default.nix** - Main Hyprland configuration
 - **hyprland-config.nix** - Window manager settings
 - **waybar.nix** - Status bar configuration
-- **rofi.nix** - Application launcher
 - **mako.nix** - Notification daemon
 - **hyprpaper.nix** - Wallpaper management
 - **cliphist.nix** - Clipboard history
