@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   # Zotero bundles its own Firefox ESR runtime, which nixpkgs marks as insecure
@@ -15,5 +16,9 @@
 
   programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
     james-yu.latex-workshop
+  ];
+
+  programs.firefox.profiles.fpl.extensions.packages = with inputs.firefox-addons.packages."x86_64-linux"; [
+    zotero-connector
   ];
 }

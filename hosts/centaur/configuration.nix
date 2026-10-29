@@ -163,6 +163,8 @@
     HandlePowerKeyLongPress = "poweroff";
   };
 
+  boot.blacklistedKernelModules = ["tiny_power_button"];
+
   # ============================================================================
   # HARDWARE CONFIGURATION
   # ============================================================================
