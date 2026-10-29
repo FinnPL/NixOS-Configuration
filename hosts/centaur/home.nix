@@ -63,6 +63,11 @@
           pkgs.nss
           pkgs.sqlite
         ];
+      postInstall =
+        (oldAttrs.postInstall or "")
+        + ''
+          install -Dm644 $out/share/icons/termius-app.png $out/share/pixmaps/termius-app.png
+        '';
     }))
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
