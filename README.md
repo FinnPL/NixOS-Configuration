@@ -113,7 +113,7 @@ Located in `modules/home-manager/`:
 
 Located in `modules/hyprland/`:
 
-- **hyprland-config.nix** - Window manager settings, keybinds and animations (generates `hyprland.lua`, required by Hyprland >= 0.57)
+- **hyprland-config.nix** - Window manager settings, keybinds and animations
 - **hyprpaper.nix** - Wallpaper management
 - **cliphist.nix** - Clipboard history
 - **waybar.nix**, **mako.nix** - Legacy, unused (replaced by Quickshell)
