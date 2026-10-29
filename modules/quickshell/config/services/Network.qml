@@ -257,12 +257,20 @@ Singleton {
     Process {
         id: updateNetworkStrength
         running: true
-        command: ["sh", "-c", "nmcli -f IN-USE,SIGNAL,SSID device wifi | awk '/^\*/{if (NR!=1) {print $2}}'"]
+        command: ["sh", "-c", "nmcli -f IN-USE,SIGNAL,SSID device wifi | awk '/^\\*/{if (NR!=1) {print $2}}'"]
         stdout: SplitParser {
             onRead: data => {
                 root.networkStrength = parseInt(data);
             }
         }
+    }
+
+    // nmcli monitor doesn't report signal changes, so poll strength
+    Timer {
+        interval: 10000
+        running: root.wifiEnabled && !root.ethernet
+        repeat: true
+        onTriggered: updateNetworkStrength.running = true
     }
 
     Process {
