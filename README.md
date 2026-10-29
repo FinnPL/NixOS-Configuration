@@ -1,6 +1,6 @@
 # NixOS Configuration
-[![Test NixOS Configuration](https://github.com/FinnPL/nixos-config/actions/workflows/test.yml/badge.svg)](https://github.com/FinnPL/nixos-config/actions/workflows/test.yml)
-[![Evaluate NixOS Configuration](https://github.com/FinnPL/nixos-config/actions/workflows/build.yml/badge.svg)](https://github.com/FinnPL/nixos-config/actions/workflows/build.yml)
+[![Test NixOS Configuration](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/test.yml/badge.svg)](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/test.yml)
+[![Evaluate NixOS Configuration](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/build.yml/badge.svg)](https://github.com/FinnPL/NixOS-Configuration/actions/workflows/build.yml)
 
 My NixOS configuration using flakes with Hyprland, Quickshell, Home Manager, and modular structure.
 
@@ -32,7 +32,7 @@ This repository contains a complete NixOS configuration featuring:
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/FinnPL/nixos-config /etc/nixos
+git clone https://github.com/FinnPL/NixOS-Configuration /etc/nixos
 cd /etc/nixos
 ```
 
