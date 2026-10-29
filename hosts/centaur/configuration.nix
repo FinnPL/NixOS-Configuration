@@ -163,6 +163,8 @@
     HandlePowerKeyLongPress = "poweroff";
   };
 
+  boot.blacklistedKernelModules = ["tiny_power_button"];
+
   # ============================================================================
   # HARDWARE CONFIGURATION
   # ============================================================================
@@ -192,6 +194,7 @@
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
+    claude-code
   ];
 
   # ============================================================================

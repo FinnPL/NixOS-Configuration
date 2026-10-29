@@ -17,7 +17,9 @@ Item { // Player instance
     required property MprisPlayer player
     property var artUrl: player?.trackArtUrl
     property string artDownloadLocation: Directories.coverArt
-    property string artFileName: Qt.md5(artUrl)
+    property bool isFirefox: (player?.dbusName ?? "").includes(".firefox")
+    property string trackIdentity: `${player?.trackTitle ?? ""}::${player?.trackArtist ?? ""}`
+    property string artFileName: Qt.md5(trackIdentity.length > 2 ? trackIdentity : (artUrl ?? ""))
     property string artFilePath: `${artDownloadLocation}/${artFileName}`
     property color artDominantColor: ColorUtils.mix((colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary), Appearance.colors.colPrimaryContainer, 0.8) || Appearance.m3colors.m3secondaryContainer
     property bool downloaded: false
@@ -50,36 +52,99 @@ Item { // Player instance
         }
     }
 
-    Timer { // Force update for revision
+    Timer {
         running: root.player?.playbackState == MprisPlaybackState.Playing
-        interval: Config.options.resources.updateInterval
+        interval: 1000
         repeat: true
         onTriggered: {
             root.player.positionChanged()
         }
     }
 
-    onArtFilePathChanged: {
-        if (root.artUrl.length == 0) {
-            root.artDominantColor = Appearance.m3colors.m3secondaryContainer
-            return;
-        }
+    // Prefer a real artUrl; returns true if a download was kicked off.
+    function tryDownloadFromUrl() {
+        if (!root.artUrl || root.artUrl.length === 0)
+            return false;
+        coverArtDownloader.srcUrl = root.artUrl;
+        coverArtDownloader.destFile = root.artFilePath;
+        coverArtDownloader.firefox = false;
+        coverArtDownloader.running = true;
+        return true;
+    }
 
-        // Binding does not work in Process
-        coverArtDownloader.targetFile = root.artUrl 
-        coverArtDownloader.artFilePath = root.artFilePath
-        // Download
-        root.downloaded = false
-        coverArtDownloader.running = true
+    function snapshotFirefoxArt() {
+        coverArtDownloader.srcUrl = "";
+        coverArtDownloader.destFile = root.artFilePath;
+        coverArtDownloader.firefox = true;
+        coverArtDownloader.running = true;
+    }
+
+    // Resolve the cover for the *current* track: a real URL if present, else Firefox's on-disk
+    // cover. Only called once state has settled, so a fast skip can't stamp a previous track's art
+    // (whose title/artUrl D-Bus signals arrive skewed) onto the new track.
+    function resolveArt() {
+        if (root.downloaded)
+            return;
+        if (tryDownloadFromUrl())
+            return;
+        if (root.isFirefox)
+            snapshotFirefoxArt();
+    }
+
+    // Debounce: any title/artUrl change restarts this; it fires only after things stop moving,
+    // which also gives Firefox time to write the new track's cover file (~200ms).
+    Timer {
+        id: settleTimer
+        interval: 300
+        repeat: false
+        onTriggered: root.resolveArt()
+    }
+
+    property bool _initialized: false
+    function initArt() {
+        if (root._initialized)
+            return;
+        root._initialized = true;
+        root.resolveArt(); // initial open: the on-disk cover already matches, so grab it immediately
+    }
+
+    Component.onCompleted: initArt()
+    onArtFilePathChanged: {
+        if (!root._initialized) {
+            initArt();
+        } else {
+            root.downloaded = false; // track changed → drop stale art, wait for things to settle
+            settleTimer.restart();
+        }
+    }
+    onArtUrlChanged: { // same-track URL (re)appears; grab it, but only once the track has settled
+        if (!settleTimer.running && !root.downloaded)
+            root.resolveArt();
     }
 
     Process { // Cover art downloader
         id: coverArtDownloader
-        property string targetFile: root.artUrl
-        property string artFilePath: root.artFilePath
-        command: [ "bash", "-c", `[ -f ${artFilePath} ] || curl -sSL '${targetFile}' -o '${artFilePath}'` ]
+        property string srcUrl: ""
+        property string destFile: root.artFilePath
+        property bool firefox: false
+        // Resolve the source at download time: use srcUrl when present, otherwise (Firefox only)
+        // the newest cover file Firefox keeps on disk. Written via a temp file so a failed/partial
+        // fetch never leaves a broken cache entry.
+        command: [ "bash", "-c", `
+dest='${destFile}'
+src='${srcUrl}'
+[ -f "$dest" ] && exit 0
+if [ -z "$src" ] && [ '${firefox ? "1" : "0"}' = '1' ]; then
+    latest="$(ls -t "$HOME"/.mozilla/firefox/firefox-mpris/*.png 2>/dev/null | head -n1)"
+    [ -n "$latest" ] && src="file://$latest"
+fi
+[ -n "$src" ] || exit 1
+tmp="$dest.$$.part"
+if curl -fsSL "$src" -o "$tmp"; then mv -f "$tmp" "$dest"; else rm -f "$tmp"; exit 1; fi
+` ]
         onExited: (exitCode, exitStatus) => {
-            root.downloaded = true
+            if (exitCode === 0)
+                root.downloaded = true
         }
     }
 

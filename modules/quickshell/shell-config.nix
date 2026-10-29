@@ -1,4 +1,7 @@
 {
+  workspacesShown ? 10,
+  workspaceNumberMap ? null,
+}: {
   config,
   pkgs,
   lib,
@@ -211,6 +214,13 @@
         cpuWarningThreshold = 90;
       };
       screenList = [];
+      workspaces =
+        {
+          shown = workspacesShown;
+        }
+        // lib.optionalAttrs (workspaceNumberMap != null) {
+          numberMap = workspaceNumberMap;
+        };
       utilButtons = {
         showScreenSnip = true;
         showColorPicker = true;
@@ -270,6 +280,12 @@
       };
       right = {
         pages = ["calendar" "quickToggles"];
+      };
+      quickSliders = {
+        enable = true;
+        showBrightness = true;
+        showVolume = true;
+        showMic = false;
       };
     };
     time = {

@@ -4,8 +4,6 @@
   inputs,
   ...
 }: {
-  home.packages = with pkgs; [firefox];
-
   stylix.targets.firefox = {
     enable = true;
     profileNames = ["fpl"];
@@ -14,6 +12,7 @@
 
   programs.firefox = {
     enable = true;
+    configPath = ".mozilla/firefox";
     profiles.fpl = {
       isDefault = true;
       settings = {

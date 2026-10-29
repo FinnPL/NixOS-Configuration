@@ -24,8 +24,16 @@
     ../../modules/home-manager/neovim.nix
     ../../modules/home-manager/rust.nix
     ../../modules/home-manager/haskell.nix
-    ../../modules/hyprland/default.nix
+    ../../modules/home-manager/latex.nix
     ../../modules/home-manager/security-tools.nix
+    (import ../../modules/hyprland/hyprland-config.nix {
+      keyboardLayout = "ch";
+      keyboardVariant = "de";
+      enableTouchpad = true;
+    })
+    ../../modules/hyprland/hyprpaper.nix
+    ../../modules/hyprland/cliphist.nix
+    (import ../../modules/quickshell/shell-config.nix {})
   ];
 
   # This value determines the Home Manager release that your configuration is
@@ -40,8 +48,7 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    pkgs.texlive.combined.scheme-full
-    pkgs.protonvpn-gui
+    pkgs.proton-vpn
     (pkgs.termius.overrideAttrs (oldAttrs: {
       autoPatchelfIgnoreMissingDeps =
         (oldAttrs.autoPatchelfIgnoreMissingDeps or [])

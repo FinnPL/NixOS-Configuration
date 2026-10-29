@@ -12,6 +12,14 @@ This repository contains a complete NixOS configuration featuring:
 - **Home Manager** - Declarative user environment management  
 - **Stylix** - System-wide theming with automatic Quickshell integration
 - **Modular structure** - Clean separation of concerns
+- **Multiple hosts** - Shared modules, per-host hardware and parameters
+
+## Hosts
+
+| Host | Type | Notes |
+|------|------|-------|
+| `centaur` | Laptop | GRUB, single `eDP-1` display, touchpad, `ch`/`de` keyboard |
+| `orthrus` | Desktop | systemd-boot, latest kernel (AMD RDNA 4), three monitors with 4 workspaces each, `de` keyboard, Steam/gaming |
 
 ## Quick Start
 
@@ -24,23 +32,21 @@ This repository contains a complete NixOS configuration featuring:
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/FinnPL/nixos-config /etc/nixos
+git clone https://github.com/FinnPL/NixOS-Configuration /etc/nixos
 cd /etc/nixos
 ```
 
-2. Deploy the configuration:
+2. Deploy the configuration (defaults to the current `hostname`):
 ```bash
 chmod +x deploy.sh
-./deploy.sh
+./deploy.sh            # deploy configuration for $(hostname)
+./deploy.sh orthrus    # deploy a specific host
 ```
 
 3. To update flake inputs before deployment:
 ```bash
-./deploy.sh -up
+./deploy.sh -up [host]
 ```
-
-### Changing Theme
-To change the active theme, edit `flake.nix` and set `activeTheme` to your desired theme (e.g., `themes.mytheme`).
 
 ## Architecture
 
@@ -51,7 +57,12 @@ The configuration is built using Nix flakes with the following inputs:
 - **home-manager** - User environment management
 - **firefox-addons** - Firefox extensions via NUR
 - **stylix** - System-wide theming framework
-- **hyprland** - Wayland compositor and plugins
+- **nixcord** - Declarative Discord (Vencord) configuration
+- **hyprland** / **hyprland-plugins** - Wayland compositor and plugins
+- **quickshell** - Qt6/QML desktop shell (added via overlay)
+- **wallpapers** - Impure `path:/usr/share/wallpaper` input holding theme wallpapers
+
+Every host is built with the same `mkHost` helper in `flake.nix`, which wires in Home Manager, Stylix, nixcord and the Quickshell overlay.
 
 ### Directory Structure
 
@@ -60,10 +71,14 @@ The configuration is built using Nix flakes with the following inputs:
 ├── flake.lock                   # Locked input versions
 ├── deploy.sh                    # Deployment script
 ├── hosts/                       # Host-specific configurations
-│   └── centaur/
-│       ├── configuration.nix    # System configuration
-│       ├── hardware-configuration.nix  # Hardware settings
-│       └── home.nix             # User configuration
+│   ├── centaur/                 # Laptop
+│   │   ├── configuration.nix    # System configuration
+│   │   ├── hardware-configuration.nix  # Hardware settings
+│   │   └── home.nix             # User configuration
+│   └── orthrus/                 # Desktop
+│       ├── configuration.nix
+│       ├── hardware-configuration.nix
+│       └── home.nix
 ├── modules/                     # Modular configurations
 │   ├── home-manager/           # User-level modules
 │   ├── hyprland/              # Hyprland-specific modules
@@ -82,9 +97,14 @@ Located in `modules/home-manager/`:
 - **cli-tools.nix** - Command-line utilities
 - **discord.nix** - Discord configuration
 - **firefox.nix** - Firefox with extensions
+- **haskell.nix** - Haskell toolchain
 - **jetbrains.nix** - JetBrains IDE suite
 - **kitty.nix** - Terminal emulator configuration
-- **python-packages.nix** - Python development environment
+- **latex.nix** - TeX Live, Zotero and LaTeX Workshop for VS Code
+- **neovim.nix** - Neovim configuration
+- **python.nix** - Python development environment
+- **rust.nix** - Rust toolchain
+- **security-tools.nix** - Security/pentesting tools
 - **thunderbird.nix** - Email client
 - **vscode.nix** - Visual Studio Code setup
 - **zsh.nix** - Zsh shell configuration
@@ -93,13 +113,23 @@ Located in `modules/home-manager/`:
 
 Located in `modules/hyprland/`:
 
-- **default.nix** - Main Hyprland configuration
-- **hyprland-config.nix** - Window manager settings
-- **waybar.nix** - Status bar configuration
-- **rofi.nix** - Application launcher
-- **mako.nix** - Notification daemon
+- **hyprland-config.nix** - Window manager settings, keybinds and animations
 - **hyprpaper.nix** - Wallpaper management
 - **cliphist.nix** - Clipboard history
+- **waybar.nix**, **mako.nix** - Legacy, unused (replaced by Quickshell)
+
+Hosts import these modules directly. `hyprland-config.nix` is a function, so each host passes its own hardware details:
+
+```nix
+(import ../../modules/hyprland/hyprland-config.nix {
+  monitors = [{ output = "DP-1"; mode = "2560x1440@144"; position = "0x0"; scale = 1; }];
+  workspaceRules = [];          # e.g. pin workspaces to monitors
+  keyboardLayout = "de";
+  keyboardVariant = "";
+  enableTouchpad = false;
+  workspacesPerMonitor = 4;     # null = global workspaces
+})
+```
 
 ### Quickshell Modules
 
@@ -107,12 +137,12 @@ Located in `modules/quickshell/`:
 
 This is a complete Qt6/QML desktop shell based on [illogical-impulse](https://github.com/end-4/dots-hyprland), featuring:
 
-- **shell-config.nix** - Main Quickshell configuration and Nix integration
+- **shell-config.nix** - Main Quickshell configuration and Nix integration. Takes `workspacesShown` (default `10`) and an optional `workspaceNumberMap` to relabel workspaces, e.g. per-monitor numbering `1-4`
 - **generate-colors.py** - Automatic Material Design color generation from Stylix theme
 - **config/** - QML shell components including:
   - **Bar** - Status bar with system info, weather, workspaces
   - **Overview** - Window overview and app launcher
-  - **Sidebar** - Notifications, calendar, quick toggles
+  - **Sidebar** - Notifications, calendar, quick toggles, brightness/volume sliders
   - **Lock screen** - Session lock with customizable clock widgets
   - **On-screen display** - Volume, brightness indicators
   - **Notification popups** - Desktop notifications
@@ -130,6 +160,7 @@ This is a complete Qt6/QML desktop shell based on [illogical-impulse](https://gi
 Located in `modules/nixos/`:
 
 - **auto.nix** - Automatic updates and cleanup
+- **steam.nix** - Steam (Proton-GE, gamescope session), gamemode and LACT GPU control
 - **stylix-config.nix** - System-wide theming
 
 ## Maintenance
@@ -181,9 +212,9 @@ To change the active theme, edit `flake.nix` and set `activeTheme` to your desir
    - User modules: `modules/home-manager/`
    - Hyprland modules: `modules/hyprland/`
 
-2. Import in relevant configuration:
-   - System: Add to `hosts/centaur/configuration.nix`
-   - User: Add to `hosts/centaur/home.nix`
+2. Import in the relevant configuration of each host that should use it:
+   - System: Add to `hosts/<hostname>/configuration.nix`
+   - User: Add to `hosts/<hostname>/home.nix`
 
 ### Host Configuration
 
@@ -194,4 +225,12 @@ To add a new host:
    - `configuration.nix`
    - `hardware-configuration.nix`
    - `home.nix`
-3. Update `flake.nix` to include new host
+3. Add the hostname to the `genAttrs` list in `flake.nix`:
+   ```nix
+   nixosConfigurations = nixpkgs.lib.genAttrs ["centaur" "orthrus" "<hostname>"] mkHost;
+   ```
+4. Add the hostname to the `host` matrices in `.github/workflows/build.yml` and `test.yml`
+
+### CI
+
+GitHub Actions evaluate and dry-build every host. Because the `wallpapers` input is an impure local path, `.github/scripts/prepare-wallpapers.sh` creates placeholders for every wallpaper referenced in `modules/nixos/themes/defaults.nix` and patches `flake.lock` to match.

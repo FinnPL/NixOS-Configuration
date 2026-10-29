@@ -124,6 +124,7 @@ in {
   programs.nixcord = {
     enable = true;
     vesktop.enable = true;
+    discord.enable = false;
 
     config = {
       useQuickCss = true;
@@ -136,7 +137,7 @@ in {
         biggerStreamPreview.enable = true;
         messageLogger.enable = true;
         callTimer.enable = true;
-        ClearURLs.enable = true;
+        clearUrls.enable = true;
         permissionsViewer.enable = true;
         platformIndicators.enable = true;
         relationshipNotifier.enable = true;

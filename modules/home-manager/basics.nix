@@ -46,10 +46,11 @@
     components = ["pkcs11" "secrets" "ssh"];
   };
 
+  home.pointerCursor.enable = true;
+
   # GTK configuration for better theming
   gtk = {
     enable = true;
-    gtk4.theme = config.gtk.theme;
     iconTheme = {
       name = "Papirus";
       package = pkgs.papirus-icon-theme;

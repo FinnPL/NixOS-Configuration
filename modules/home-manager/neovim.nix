@@ -8,6 +8,8 @@
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    withRuby = false;
+    withPython3 = false;
 
     plugins = with pkgs.vimPlugins; [
       # Essential plugins
@@ -363,7 +365,7 @@
     # Language servers
     nixd
     rust-analyzer
-    nodePackages.typescript-language-server
+    typescript-language-server
     pyright
     clang-tools
     jdt-language-server

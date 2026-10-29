@@ -24,7 +24,9 @@ Scope {
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
             property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
             screen: modelData
-            visible: GlobalStates.overviewOpen
+            // Only show on the monitor that currently has focus, so the search/overview
+            // doesn't get mirrored onto every screen at once.
+            visible: GlobalStates.overviewOpen && root.monitorIsFocused
 
             WlrLayershell.namespace: "quickshell:overview"
             WlrLayershell.layer: WlrLayer.Overlay
@@ -101,10 +103,10 @@ Scope {
                         GlobalStates.overviewOpen = false;
                     } else if (event.key === Qt.Key_Left) {
                         if (!root.searchingText)
-                            Hyprland.dispatch("workspace r-1");
+                            Hyprland.dispatch(`hl.dsp.focus({ workspace = "r-1" })`);
                     } else if (event.key === Qt.Key_Right) {
                         if (!root.searchingText)
-                            Hyprland.dispatch("workspace r+1");
+                            Hyprland.dispatch(`hl.dsp.focus({ workspace = "r+1" })`);
                     }
                 }
 

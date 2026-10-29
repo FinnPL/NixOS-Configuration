@@ -3,7 +3,10 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs; [pkgs.vscode];
+  home.file.".vscode/argv.json".text = builtins.toJSON {
+    "enable-crash-reporter" = false;
+    "password-store" = "gnome-libsecret";
+  };
 
   programs.vscode = {
     enable = true;
@@ -17,8 +20,6 @@
       github.copilot-chat
       github.vscode-pull-request-github
       #eamdio.gitlens
-      james-yu.latex-workshop
-      #valentjn.vscode-latex
       jnoortheen.nix-ide
     ];
   };

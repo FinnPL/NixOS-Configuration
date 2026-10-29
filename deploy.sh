@@ -4,17 +4,19 @@ set -euo pipefail
 
 # Variables
 FLAKE_PATH="."
-HOST="centaur"
+HOST="$(hostname)"
 
 # Check for required commands
 command -v nixos-rebuild >/dev/null 2>&1 || { echo "nixos-rebuild not found."; exit 1; }
 
-# Parse arguments
+# Parse arguments: ./deploy.sh [-up] [host]
 UPDATE=0
 for arg in "$@"; do
-    if [[ "$arg" == "-up" ]]; then
-        UPDATE=1
-    fi
+    case "$arg" in
+        -up) UPDATE=1 ;;
+        -*) echo "Unknown option: $arg"; exit 1 ;;
+        *) HOST="$arg" ;;
+    esac
 done
 
 # Format Nix files
