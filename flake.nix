@@ -44,45 +44,32 @@
     themes = import ./modules/nixos/themes/defaults.nix;
     activeTheme = themes.valua; # Change this to switch themes
     wallpaperPath = "${inputs.wallpapers}/${activeTheme.wallpaper}";
+
+    mkHost = host:
+      nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/${host}/configuration.nix
+          inputs.home-manager.nixosModules.default
+          inputs.stylix.nixosModules.stylix
+          {
+            home-manager.sharedModules = [
+              inputs.nixcord.homeModules.nixcord
+            ];
+            # Add quickshell overlay
+            nixpkgs.overlays = [
+              inputs.quickshell.overlays.default
+            ];
+          }
+        ];
+      };
   in {
     theme = builtins.path {
       path = activeTheme.colorScheme;
       name = "base16-theme";
     };
     wallpaperPath = wallpaperPath;
-    nixosConfigurations.centaur = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./hosts/centaur/configuration.nix
-        inputs.home-manager.nixosModules.default
-        inputs.stylix.nixosModules.stylix
-        {
-          home-manager.sharedModules = [
-            inputs.nixcord.homeModules.nixcord
-          ];
-          # Add quickshell overlay
-          nixpkgs.overlays = [
-            inputs.quickshell.overlays.default
-          ];
-        }
-      ];
-    };
-    nixosConfigurations.orthrus = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./hosts/orthrus/configuration.nix
-        inputs.home-manager.nixosModules.default
-        inputs.stylix.nixosModules.stylix
-        {
-          home-manager.sharedModules = [
-            inputs.nixcord.homeModules.nixcord
-          ];
-          nixpkgs.overlays = [
-            inputs.quickshell.overlays.default
-          ];
-        }
-      ];
-    };
+    nixosConfigurations = nixpkgs.lib.genAttrs ["centaur" "orthrus"] mkHost;
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
   };
 }
