@@ -20,8 +20,6 @@
       github.copilot-chat
       github.vscode-pull-request-github
       #eamdio.gitlens
-      james-yu.latex-workshop
-      #valentjn.vscode-latex
       jnoortheen.nix-ide
     ];
   };
