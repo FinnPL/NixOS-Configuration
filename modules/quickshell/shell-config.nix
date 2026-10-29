@@ -281,6 +281,12 @@
       right = {
         pages = ["calendar" "quickToggles"];
       };
+      quickSliders = {
+        enable = true;
+        showBrightness = true;
+        showVolume = true;
+        showMic = false;
+      };
     };
     time = {
       secondPrecision = true;
