@@ -73,9 +73,9 @@ in {
         };
 
         general = {
-          border_size = 2;
+          border_size = 1;
           "col.active_border" = lib.mkForce {
-            colors = ["rgba(${colors.base0D}88)" "rgba(${colors.base0C}88)"];
+            colors = ["rgba(${colors.base0D}40)" "rgba(${colors.base0C}40)"];
             angle = 45;
           };
           "col.inactive_border" = lib.mkForce "rgba(${colors.base00}00)";
@@ -128,6 +128,7 @@ in {
           hl.window_rule({ match = { class = class }, opacity = "0.98 override 0.98 override" })
         end
         hl.window_rule({ match = { float = true }, animation = "popin 80%" })
+        hl.window_rule({ match = { modal = true }, float = true, center = true, dim_around = true, rounding = 28, border_size = 0, opacity = "1.0 override 1.0 override", animation = "popin 90%" })
 
         -- Quickshell toggles
         hl.bind("XF86PowerOff",     hl.dsp.exec_cmd(qs .. "session toggle"))
