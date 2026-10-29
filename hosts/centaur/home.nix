@@ -24,9 +24,9 @@
     ../../modules/home-manager/neovim.nix
     ../../modules/home-manager/rust.nix
     ../../modules/home-manager/haskell.nix
+    ../../modules/home-manager/latex.nix
     ../../modules/home-manager/security-tools.nix
     (import ../../modules/hyprland/hyprland-config.nix {
-      monitorConfig = "monitor = eDP-1,1920x1080@60,0x0,1";
       keyboardLayout = "ch";
       keyboardVariant = "de";
       enableTouchpad = true;
@@ -48,7 +48,6 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    pkgs.texliveFull
     pkgs.proton-vpn
     (pkgs.termius.overrideAttrs (oldAttrs: {
       autoPatchelfIgnoreMissingDeps =

@@ -29,21 +29,19 @@ Scope {
 
     property var windowData: []
     function saveWindowPositionAndTile() {
-        Quickshell.execDetached(["hyprctl", "keyword", "dwindle:pseudotile", "true"])
         root.windowData = HyprlandData.windowList.filter(w => (w.floating && w.workspace.id === HyprlandData.activeWorkspace.id))
         root.windowData.forEach(w => {
-			Hyprland.dispatch(`pseudo address:${w.address}`)
-            Hyprland.dispatch(`settiled address:${w.address}`)
-			Hyprland.dispatch(`movetoworkspacesilent ${w.workspace.id},address:${w.address}`)
+			Hyprland.dispatch(`hl.dsp.window.pseudo({ action = "enable", window = "address:${w.address}" })`)
+            Hyprland.dispatch(`hl.dsp.window.float({ action = "disable", window = "address:${w.address}" })`)
+			Hyprland.dispatch(`hl.dsp.window.move({ workspace = "${w.workspace.id}", follow = false, window = "address:${w.address}" })`)
         })
     }
     function restoreWindowPositionAndTile() {
         root.windowData.forEach(w => {
-            Hyprland.dispatch(`setfloating address:${w.address}`)
-            Hyprland.dispatch(`movewindowpixel exact ${w.at[0]} ${w.at[1]}, address:${w.address}`)
-			Hyprland.dispatch(`pseudo address:${w.address}`)
+            Hyprland.dispatch(`hl.dsp.window.float({ action = "enable", window = "address:${w.address}" })`)
+            Hyprland.dispatch(`hl.dsp.window.move({ x = ${w.at[0]}, y = ${w.at[1]}, window = "address:${w.address}" })`)
+			Hyprland.dispatch(`hl.dsp.window.pseudo({ action = "disable", window = "address:${w.address}" })`)
         })
-		Quickshell.execDetached(["hyprctl", "keyword", "dwindle:pseudotile", "false"])
     }
 
     // This stores all the information shared between the lock surfaces on each screen.
@@ -79,7 +77,7 @@ Scope {
             GlobalStates.screenLocked = false;
             
             // Refocus last focused window on unlock (hack)
-            Quickshell.execDetached(["bash", "-c", `sleep 0.2; hyprctl --batch "dispatch togglespecialworkspace; dispatch togglespecialworkspace"`])
+            Quickshell.execDetached(["bash", "-c", `sleep 0.2; hyprctl --batch "dispatch hl.dsp.workspace.toggle_special(); dispatch hl.dsp.workspace.toggle_special()"`])
 
             // Reset
             lockContext.reset();
@@ -118,9 +116,9 @@ Scope {
             onShouldPushChanged: {
                 if (shouldPush) {
                     root.saveWindowPositionAndTile();
-                    Quickshell.execDetached(["bash", "-c", `hyprctl keyword monitor ${targetMonitorName}, addreserved, ${verticalMovementDistance}, ${-verticalMovementDistance}, ${horizontalSqueeze}, ${horizontalSqueeze}`])
+                    Quickshell.execDetached(["bash", "-c", `hyprctl eval 'hl.monitor({ output = "${targetMonitorName}", reserved = { top = ${verticalMovementDistance}, bottom = ${-verticalMovementDistance}, left = ${horizontalSqueeze}, right = ${horizontalSqueeze} } })'`])
                 } else {
-                    Quickshell.execDetached(["bash", "-c", `hyprctl keyword monitor ${targetMonitorName}, addreserved, 0, 0, 0, 0`])
+                    Quickshell.execDetached(["bash", "-c", `hyprctl eval 'hl.monitor({ output = "${targetMonitorName}", reserved = 0 })'`])
                     root.restoreWindowPositionAndTile();
                 }
             }

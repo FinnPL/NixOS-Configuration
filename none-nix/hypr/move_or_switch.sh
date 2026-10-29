@@ -19,10 +19,10 @@ per_mon="${3:-0}"
 # --- monitor mode: push the window to the neighbouring monitor -------------
 if [[ "$mode" == "monitor" ]]; then
   case "$direction" in
-    left)  hyprctl dispatch movewindow mon:l ;;
-    right) hyprctl dispatch movewindow mon:r ;;
-    up)    hyprctl dispatch movewindow mon:u ;;
-    down)  hyprctl dispatch movewindow mon:d ;;
+    left)  hyprctl dispatch 'hl.dsp.window.move({ monitor = "l" })' ;;
+    right) hyprctl dispatch 'hl.dsp.window.move({ monitor = "r" })' ;;
+    up)    hyprctl dispatch 'hl.dsp.window.move({ monitor = "u" })' ;;
+    down)  hyprctl dispatch 'hl.dsp.window.move({ monitor = "d" })' ;;
     *) echo "Unknown direction: $direction" >&2; exit 1 ;;
   esac
   exit 0
@@ -52,8 +52,8 @@ target_ws() {
 # --- switch mode: just change workspace within the monitor -----------------
 if [[ "$mode" == "switch" ]]; then
   case "$direction" in
-    left)  hyprctl dispatch workspace "$(target_ws prev)" ;;
-    right) hyprctl dispatch workspace "$(target_ws next)" ;;
+    left)  hyprctl dispatch "hl.dsp.focus({ workspace = \"$(target_ws prev)\" })" ;;
+    right) hyprctl dispatch "hl.dsp.focus({ workspace = \"$(target_ws next)\" })" ;;
     *) echo "switch only supports left/right" >&2; exit 1 ;;
   esac
   exit 0
@@ -102,14 +102,14 @@ if (( at_edge )); then
   if [[ $axis == x ]]; then
     # At a horizontal edge: move window to prev/next workspace on this monitor
     if [[ $direction == left ]]; then
-      hyprctl dispatch movetoworkspace "$(target_ws prev)"
+      hyprctl dispatch "hl.dsp.window.move({ workspace = \"$(target_ws prev)\" })"
     else
-      hyprctl dispatch movetoworkspace "$(target_ws next)"
+      hyprctl dispatch "hl.dsp.window.move({ workspace = \"$(target_ws next)\" })"
     fi
   else
     # At a vertical edge: toggle the split orientation
-    hyprctl dispatch layoutmsg "togglesplit"
+    hyprctl dispatch 'hl.dsp.layout("togglesplit")'
   fi
 else
-  hyprctl dispatch movewindow "${SHORT[$direction]}"
+  hyprctl dispatch "hl.dsp.window.move({ direction = \"${SHORT[$direction]}\" })"
 fi
